@@ -7,5 +7,41 @@ GET http://localhost:3000/orders
 GET http://localhost:3000/orders/1001
 
 ### Filter orders by status
-
 GET http://localhost:3000/orders?status=delivered
+
+### Create a new order
+
+POST http://localhost:3000/orders
+Content-Type: application/json
+
+{
+    "id": "1004",
+    "customerInfo": {
+    "name": "Mario Rossi",
+    "phone": "555-3569",
+    "address": "563 Oak St, Example City",
+    "email": "marioro@example.com"
+    },
+    "orderDetails": {
+    "items": [
+        {
+        "itemName": "Bacon",
+        "quantity": 1,
+        "pricePerUnit": 5
+        },
+        {
+        "itemName": "Egg",
+        "quantity": 2,
+        "pricePerUnit": 5.5
+        }
+    ],
+    "totalPrice": 10.5
+    },
+    "status": "Order received",
+    "statusUpdates": [
+        {
+            "timestamp": "2023-10-21T08:30:00Z",
+            "update": "Order received"
+        }
+    ]
+}
