@@ -1,0 +1,11 @@
+### Retrieve all orders
+
+GET http://localhost:3000/orders
+
+### Retrieve a single order by Id
+
+GET http://localhost:3000/orders/1001
+
+### Filter orders by status
+
+GET http://localhost:3000/orders?status=delivered
