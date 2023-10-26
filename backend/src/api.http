@@ -45,3 +45,17 @@ Content-Type: application/json
         }
     ]
 }
+
+### Update an existing order
+PATCH http://localhost:3000/orders/1001
+Content-Type: application/json
+
+{   "id": "1004",
+    "status": "Returned",
+    "statusUpdates": [
+        {
+            "timestamp": "2023-10-21T08:30:00Z",
+            "update": "Order received"
+        }
+    ]
+}

@@ -1,10 +1,16 @@
 import express from 'express';
 import crypto from 'crypto';
-import orders from './orders.json' assert { type: 'json' };
 import OrderSchema from './validation-schemas/orderSchema.js'
+import zod from 'zod';
+import cors from 'cors';
+//Read a json file ESModule
+import { createRequire } from 'node:module';
+const require = createRequire(import.meta.url);
+const orders = require('./orders.json');
 
 const app = express();
 app.use(express.json());
+app.use(cors());
 app.disable("x-powered-by");
 
 app.get("/", (req, res) => {
@@ -47,8 +53,29 @@ app.post("/orders", (req, res) => {
     }
 })
 
+app.patch("/orders/:id", (req, res) => {
+    const { id } = req.params;
+    const orderIndex = orders.findIndex((order) => order.id === id);
+    if (orderIndex === -1) {
+        res.status(404).json({ message: "Order not found" });
+    }
+    try{
+        const validatedOrder = OrderSchema.partial().parse(req.body);
+        console.log(validatedOrder)
+        const existingOrder = orders[orderIndex];
+        const updatedOrder = { ...existingOrder, ...validatedOrder };
+        orders[orderIndex] = updatedOrder;
+        res.json(updatedOrder);
 
+    } catch (error) {
+        if (error instanceof zod.ZodError) {
+            res.status(400).json({message: error.message})
+        } else {
+            res.status(500).json({message: "Internal server error"})
+        }   
+    }
 
+});
 const PORT = process.env.PORT ?? 3000;
 
 app.listen(PORT, () => {

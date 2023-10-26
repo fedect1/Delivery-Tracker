@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en>">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Testin API Rest</title>
+    <script type="module">
+        fetch('http://localhost:3000/orders')
+        .then(response => response.json())
+        .then(orders => {
+            const html = orders.map(order => {
+                return `
+                    <article data-id="${order.id}">
+                        <h1>${order.id}</h1>
+                        <p>${order.name}</p>
+                        <p>${order.email}</p>
+                        <p>${order.phone}</p>
+                        <p>${order.address}</p>
+                        <p>${order.total}</p>
+                        <p>${order.status}</p>
+                        <p>${order.created_at}</p>
+                        <p>${order.updated_at}</p>
+                    </article>
+                `
+            }).join("")
+            document.querySelector('#orders').insertAdjacentHTML('afterbegin', html)
+
+        })
+    </script>
+</html>
