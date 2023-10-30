@@ -5,10 +5,11 @@ import { connectToMongoDB } from './database-connection.js';
 
 
 const app = express();
-connectToMongoDB();
 app.use(express.json());
 app.use(cors());
 app.disable("x-powered-by");
+
+connectToMongoDB();
 
 app.use("/orders", ordersRouter);
 
