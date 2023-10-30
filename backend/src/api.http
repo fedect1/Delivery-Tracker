@@ -59,3 +59,22 @@ Content-Type: application/json
         }
     ]
 }
+
+### Create a new order with MongoDB Schema
+POST http://localhost:3000/orders
+Content-Type: application/json
+
+{   "userId": "1001",
+    "products": [
+        {
+            "productId": "1001",
+            "quantity": 1
+        },
+        {
+            "productId": "1002",
+            "quantity": 2
+        }
+    ],
+    "total": 10.5,
+    "date": "2023-10-21T08:30:00Z"
+}

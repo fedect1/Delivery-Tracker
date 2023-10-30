@@ -20,15 +20,9 @@ const orderSchema = new mongoose.Schema({
 });
 
 class Order {
-    static async createOrder(userId, products, total) {
+    static async createOrder({input}) {
         try {
-            //Close de connection after the request is done
-            const order = new this({
-                userId,
-                products,
-                total,
-                date: new Date(),
-            });
+            const order = new this(input);
             await order.save();
             return order;
         } catch (err) {
