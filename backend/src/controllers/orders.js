@@ -1,6 +1,5 @@
 import OrderModel from '../models/mongodb/order.js';
-import zod from 'zod';
-import validateOrder from '../validation-schemas/orderSchema.js';
+import { validateOrder, validateOrderUpdate } from '../validation-schemas/orderSchema.js';
 export class orderController{
     static async getAll(req, res){
         const {status} = req.query;
@@ -32,13 +31,12 @@ export class orderController{
     }
 
     static async update(req, res){
-        const { id } = req.params;
-        const { input } = req.body;
-        const validatedInput = OrderSchema.parse(input);
-        const order = await OrderModel.update({id, input: validatedInput});
+        const { trackerNumber } = req.params;
+        const validatedInput = validateOrderUpdate(req.body);
+        const order = await OrderModel.update({trackerNumber, input: validatedInput});
         if (!order) {
             return res.status(404).json({ message: "Order not found" });
         }
-        res.json(order);
+        res.status(200).json(order);
     }
 }

@@ -1,65 +1,3 @@
-### Retrieve all orders
-
-GET http://localhost:3000/orders
-
-### Retrieve a single order by Id
-
-GET http://localhost:3000/orders/1001
-
-### Filter orders by status
-GET http://localhost:3000/orders?status=delivered
-
-### Create a new order
-
-POST http://localhost:3000/orders
-Content-Type: application/json
-
-{
-    "id": "1004",
-    "customerInfo": {
-    "name": "Mario Rossi",
-    "phone": "555-3569",
-    "address": "563 Oak St, Example City",
-    "email": "marioro@example.com"
-    },
-    "orderDetails": {
-    "items": [
-        {
-        "itemName": "Bacon",
-        "quantity": 1,
-        "pricePerUnit": 5
-        },
-        {
-        "itemName": "Egg",
-        "quantity": 2,
-        "pricePerUnit": 5.5
-        }
-    ],
-    "totalPrice": 10.5
-    },
-    "status": "Order received",
-    "statusUpdates": [
-        {
-            "timestamp": "2023-10-21T08:30:00Z",
-            "update": "Order received"
-        }
-    ]
-}
-
-### Update an existing order
-PATCH http://localhost:3000/orders/1001
-Content-Type: application/json
-
-{   "id": "1004",
-    "status": "Returned",
-    "statusUpdates": [
-        {
-            "timestamp": "2023-10-21T08:30:00Z",
-            "update": "Order received"
-        }
-    ]
-}
-
 ### Create a new order with MongoDB Schema
 POST http://localhost:3000/orders
 Content-Type: application/json
@@ -97,6 +35,25 @@ Content-Type: application/json
         {
             "timestamp": "2023-10-23T11:10:00Z",
             "update": "Order has been confirmed and is currently being prepared."
+        }
+    ]
+}
+
+
+### PUT an update to an order
+PUT http://localhost:3000/orders/ORD-98765ZYX
+Content-Type: application/json
+
+{
+    "status": "preparing",
+    "statusUpdates": [
+        {
+            "timestamp": "2023-10-23T11:10:00Z",
+            "update": "Order has been confirmed and is currently being prepared."
+        },
+        {
+            "timestamp": "2023-10-23T11:15:00Z",
+            "update": "Order is being prepared."
         }
     ]
 }

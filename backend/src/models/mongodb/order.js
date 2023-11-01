@@ -83,6 +83,16 @@ class Order {
             mongoose.connection.close();
         }
     }
+    static async update({trackerNumber, input}) {
+        try {
+            const order = await this.findOneAndUpdate({ trackerNumber }, input, { new: true });
+            return order;
+        } catch (err) {
+            throw err;
+        } finally {
+            mongoose.connection.close();
+        }
+    }
     static async getOrdersByUserId(userId) {
         try {
             const orders = await this.find({ userId });

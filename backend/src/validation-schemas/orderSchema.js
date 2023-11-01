@@ -1,5 +1,6 @@
 import zod from 'zod';
 
+// VALIDATION SCHEMAS FOR POST /orders
 const itemSchema = zod.object({
     itemName: zod.string(),
     quantity: zod.number().positive(),
@@ -40,4 +41,34 @@ const validateOrder = (order) => {
     return validationResult.data;
 }
 
-export default validateOrder;
+// VALIDATION SCHEMAS FOR PUT /orders/:trackerNumber
+const orderUpdateSchema = zod.object({
+    costumerInfo: zod.object({
+        name: zod.string().optional(),
+        address: zod.string().optional(),
+        phone: zod.string().optional(),
+        email: zod.string().email().optional(),
+    }).optional(),
+    orderDetails: zod.object({
+        items: zod.array(itemSchema).optional(),
+        totalPrice: zod.number().positive().optional(),
+    }).optional(),
+    status: zod.enum(['received', 'preparing', 'out for delivery', 'delivered']).optional(),
+    statusUpdates: zod.array(statusUpdateSchema).optional(),
+});
+
+const validateOrderUpdate = (order) => {
+    if (order.statusUpdates){
+        order.statusUpdates = order.statusUpdates.map(update => ({
+            ...update,
+            timestamp: new Date(update.timestamp),
+        }));
+    }
+
+    const validationResult = orderUpdateSchema.safeParse(order);
+    if (!validationResult.success) {
+        console.log(validationResult.error);
+    }
+    return validationResult.data;
+}
+export { validateOrder, validateOrderUpdate };
