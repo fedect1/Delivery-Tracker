@@ -1,22 +1,74 @@
 import mongoose from "mongoose";
 
-const orderSchema = new mongoose.Schema({
-    userId: {
+const itemSchema = new mongoose.Schema({
+    itemName: {
         type: String,
         required: true,
     },
-    products: {
-        type: Array,
-        required: true,
-    },
-    total: {
+    quantity: {
         type: Number,
         required: true,
     },
-    date: {
+    pricePerItem: {
+        type: Number,
+        required: true,
+    }
+});
+
+const statusUpdateSchema = new mongoose.Schema({
+    timestamp: {
         type: Date,
         required: true,
     },
+    update: {
+        type: String,
+        required: true,
+    }
+});
+
+const orderSchema = new mongoose.Schema({
+    trackerNumber: {
+        type: String,
+        required: true,
+        unique: true,
+    },
+    costumerInfo: {
+        name: {
+            type: String,
+            required: true,
+        },
+        address: {
+            type: String,
+            required: true,
+        },
+        phone: {
+            type: String,
+            required: true,
+        },
+        email: {
+            type: String,
+            required: true,
+        }
+    },
+    orderDetails: {
+        items: {
+            type: [itemSchema],
+            required: true,
+        },
+        totalPrice: {
+            type: Number,
+            required: true,
+        }
+    },
+    status: {
+        type: String,
+        enum: ['received', 'preparing', 'out for delivery', 'delivered'],
+        required: true,
+    },
+    statusUpdates: {
+        type: [statusUpdateSchema],
+        required: true,
+    }
 });
 
 class Order {

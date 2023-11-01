@@ -1,10 +1,10 @@
-import  OrderModel from '../models/mongodb/order.js';
+import OrderModel from '../models/mongodb/order.js';
 import zod from 'zod';
-import OrderSchema from '../validation-schemas/orderSchema.js'
+import validateOrder from '../validation-schemas/orderSchema.js';
 export class orderController{
     static async getAll(req, res){
         const {status} = req.query;
-        const orders = await orderModel.getAll({status});
+        const orders = await OrderModel.getAll({status});
         res.json(orders);
     }
 
@@ -19,15 +19,15 @@ export class orderController{
 
     static async create(req, res){
         try{
-            const validatedOrder = OrderSchema.parse(req.body);
+            const validatedOrder = validateOrder(req.body);
             const order = await OrderModel.createOrder({input: validatedOrder});
             res.status(201).json(order);
-        } catch (error) {
-            if (error instanceof zod.ZodError) {
-                res.status(400).json({message: error.message})
+        } catch (err) {
+            if (err instanceof mongoose.Error.ValidationError) {
+              throw new Error('Validación fallida: ' + err.message);
             } else {
-                res.status(500).json({message: "Internal server error"})
-            }   
+              throw err;
+            }
         }
     }
 

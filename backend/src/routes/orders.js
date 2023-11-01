@@ -12,3 +12,11 @@ ordersRouter.post("/", orderController.create);
 
 ordersRouter.patch("/:id", orderController.update);
 
+
+// GET /orders
+// GET /orders/:id
+// POST /orders
+// PUT /orders/:id
+// PATCH /orders/:id/status
+// PATCH /orders/:id/details
+// DELETE /orders/:id

@@ -1,37 +1,43 @@
 import zod from 'zod';
 
-const OrderSchema = zod.object({
-    // customerInfo: zod.object({
-    //   name: zod.string(),
-    //   phone: zod.string(),
-    //   address: zod.string(),
-    //   email: zod.string().email(),
-    // }),
-    // orderDetails: zod.object({
-    //   items: zod.array(
-    //     zod.object({
-    //       itemName: zod.string(),
-    //       quantity: zod.number().int().positive(),
-    //       pricePerUnit: zod.number().positive(),
-    //     })
-    //   ),
-    //   totalPrice: zod.number().positive(),
-    // }),
-    // status: zod.string(),
-    // statusUpdates: zod.array(
-    //   zod.object({
-    //     timestamp: zod.string().regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/), // This is a simple regex for the date-time format. Depending on your requirements, you might want a more sophisticated validation.
-    //     update: zod.string(),
-    //   })
-    // ),
-    userId: zod.string(),
-    products: zod.array(zod.object({
-        productId: zod.string(),
-        quantity: zod.number().int().positive(),
-    })),
-    total: zod.number().positive(),
-    date: zod.string().regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/),
-
+const itemSchema = zod.object({
+    itemName: zod.string(),
+    quantity: zod.number().positive(),
+    pricePerItem: zod.number().positive(),
+});
+const statusUpdateSchema = zod.object({
+    timestamp: zod.date(),
+    update: zod.string(),
 });
 
-export default OrderSchema;
+const orderSchema = zod.object({
+    trackerNumber: zod.string(),
+    costumerInfo: zod.object({
+        name: zod.string(),
+        address: zod.string(),
+        phone: zod.string(),
+        email: zod.string().email(),
+    }),
+    orderDetails: zod.object({
+        items: zod.array(itemSchema),
+        totalPrice: zod.number().positive(),
+    }),
+    status: zod.enum(['received', 'preparing', 'out for delivery', 'delivered']),
+    statusUpdates: zod.array(statusUpdateSchema),
+});
+
+const validateOrder = (order) => {
+    order.statusUpdates = order.statusUpdates.map(update => ({
+        ...update,
+        timestamp: new Date(update.timestamp),
+    }));
+
+    const validationResult = orderSchema.safeParse(order);
+    console.log("Se valido el pedido");
+    if (!validationResult.success) {
+        console.log(validationResult.error);
+    }
+    return validationResult.data;
+}
+
+export default validateOrder;
