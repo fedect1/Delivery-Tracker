@@ -57,3 +57,11 @@ Content-Type: application/json
         }
     ]
 }
+
+### PATCH an update the status of an order
+PATCH http://localhost:3000/orders/ORD-98765ZYX/status
+Content-Type: application/json
+
+{
+    "status": "received"
+}

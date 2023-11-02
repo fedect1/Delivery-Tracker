@@ -24,7 +24,7 @@ const statusUpdateSchema = new mongoose.Schema({
         type: String,
         required: true,
     }
-});
+}, {_id: false});
 
 const orderSchema = new mongoose.Schema({
     trackerNumber: {
@@ -93,20 +93,16 @@ class Order {
             mongoose.connection.close();
         }
     }
-    static async getOrdersByUserId(userId) {
+    static async updateStatus({trackerNumber, input}) {
         try {
-            const orders = await this.find({ userId });
-            return orders;
-        } catch (err) {
-            throw err;
-        } finally {
-            mongoose.connection.close();
-        }
-    }
-    static async getAllOrders() {
-        try {
-            const orders = await this.find();
-            return orders;
+            const order = await this.findOne({ trackerNumber });
+            order.status = input.status;
+            order.statusUpdates.push({
+                timestamp: new Date(),
+                update: input.status,
+            });
+            await order.save();
+            return order;
         } catch (err) {
             throw err;
         } finally {

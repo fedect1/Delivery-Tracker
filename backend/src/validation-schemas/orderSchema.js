@@ -71,4 +71,20 @@ const validateOrderUpdate = (order) => {
     }
     return validationResult.data;
 }
-export { validateOrder, validateOrderUpdate };
+
+// VALIDATION SCHEMAS FOR PATCH /orders/:trackerNumber/status
+const statusSchema = zod.object({
+    status: zod.enum(['received', 'preparing', 'out for delivery', 'delivered']),
+});
+
+
+const validateStatusUpdate = (statusUpdate) => {
+    const validationResult = statusSchema.safeParse(statusUpdate);
+    if (!validationResult.success) {
+        console.log(validationResult.error);
+    }
+    return validationResult.data;
+}
+
+
+export { validateOrder, validateOrderUpdate, validateStatusUpdate };
