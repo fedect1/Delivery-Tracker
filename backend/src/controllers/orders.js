@@ -1,5 +1,5 @@
 import OrderModel from '../models/mongodb/order.js';
-import { validateOrder, validateOrderUpdate, validateStatusUpdate } from '../validation-schemas/orderSchema.js';
+import { validateOrder, validateOrderUpdate, validateStatusUpdate, validateOrderDetails } from '../validation-schemas/orderSchema.js';
 export class orderController{
     static async create(req, res){
         try{
@@ -25,9 +25,17 @@ export class orderController{
     }
     static async updateStatus(req, res){
         const { trackerNumber } = req.params;
-        console.log(req.body)
         const validatedInput = validateStatusUpdate(req.body);
         const order = await OrderModel.updateStatus({trackerNumber, input: validatedInput});
+        if (!order) {
+            return res.status(404).json({ message: "Order not found" });
+        }
+        res.status(200).json(order);
+    }
+    static async addOrderDetailItem(req, res){
+        const { trackerNumber } = req.params;
+        const validatedInput = validateOrderDetails(req.body);
+        const order = await OrderModel.addOrderDetailItem({trackerNumber, input: validatedInput});
         if (!order) {
             return res.status(404).json({ message: "Order not found" });
         }

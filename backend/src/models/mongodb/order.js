@@ -13,7 +13,7 @@ const itemSchema = new mongoose.Schema({
         type: Number,
         required: true,
     }
-});
+}, {_id: false});
 
 const statusUpdateSchema = new mongoose.Schema({
     timestamp: {
@@ -53,10 +53,6 @@ const orderSchema = new mongoose.Schema({
     orderDetails: {
         items: {
             type: [itemSchema],
-            required: true,
-        },
-        totalPrice: {
-            type: Number,
             required: true,
         }
     },
@@ -101,6 +97,30 @@ class Order {
                 timestamp: new Date(),
                 update: input.status,
             });
+            await order.save();
+            return order;
+        } catch (err) {
+            throw err;
+        } finally {
+            mongoose.connection.close();
+        }
+    }
+    static async updateOrderDetails({trackerNumber, input}) {
+        try {
+            const order = await this.findOne({ trackerNumber });
+            order.orderDetails = input.orderDetails;
+            await order.save();
+            return order;
+        } catch (err) {
+            throw err;
+        } finally {
+            mongoose.connection.close();
+        }
+    }
+    static async addOrderDetailItem({trackerNumber, input}) {
+        try {
+            const order = await this.findOne({ trackerNumber });
+            order.orderDetails.items.push(input.item);
             await order.save();
             return order;
         } catch (err) {

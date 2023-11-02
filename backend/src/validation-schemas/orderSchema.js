@@ -21,7 +21,6 @@ const orderSchema = zod.object({
     }),
     orderDetails: zod.object({
         items: zod.array(itemSchema),
-        totalPrice: zod.number().positive(),
     }),
     status: zod.enum(['received', 'preparing', 'out for delivery', 'delivered']),
     statusUpdates: zod.array(statusUpdateSchema),
@@ -51,7 +50,6 @@ const orderUpdateSchema = zod.object({
     }).optional(),
     orderDetails: zod.object({
         items: zod.array(itemSchema).optional(),
-        totalPrice: zod.number().positive().optional(),
     }).optional(),
     status: zod.enum(['received', 'preparing', 'out for delivery', 'delivered']).optional(),
     statusUpdates: zod.array(statusUpdateSchema).optional(),
@@ -86,5 +84,14 @@ const validateStatusUpdate = (statusUpdate) => {
     return validationResult.data;
 }
 
+//VALIDATION SCHEMAS FOR PATCH /orders/:trackerNumber/order-details
 
-export { validateOrder, validateOrderUpdate, validateStatusUpdate };
+const validateOrderDetails = (orderDetails) => {
+    const validationResult = itemSchema.safeParse(orderDetails);
+    if (!validationResult.success) {
+        console.log(validationResult.error);
+    }
+    return validationResult.data;
+}
+
+export { validateOrder, validateOrderUpdate, validateStatusUpdate, validateOrderDetails };
