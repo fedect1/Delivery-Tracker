@@ -75,9 +75,7 @@ class Order {
             return order;
         } catch (err) {
             throw err;
-        } finally {
-            mongoose.connection.close();
-        }
+        } 
     }
     static async update({trackerNumber, input}) {
         try {
@@ -85,9 +83,7 @@ class Order {
             return order;
         } catch (err) {
             throw err;
-        } finally {
-            mongoose.connection.close();
-        }
+        } 
     }
     static async updateStatus({trackerNumber, input}) {
         try {
@@ -101,9 +97,7 @@ class Order {
             return order;
         } catch (err) {
             throw err;
-        } finally {
-            mongoose.connection.close();
-        }
+        } 
     }
     static async updateOrderDetails({trackerNumber, input}) {
         try {
@@ -113,9 +107,7 @@ class Order {
             return order;
         } catch (err) {
             throw err;
-        } finally {
-            mongoose.connection.close();
-        }
+        } 
     }
     static async addOrderDetailItem({trackerNumber, input}) {
         try {
@@ -125,9 +117,7 @@ class Order {
             return order;
         } catch (err) {
             throw err;
-        } finally {
-            mongoose.connection.close();
-        }
+        } 
     }
 }
 

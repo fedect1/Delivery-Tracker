@@ -66,7 +66,7 @@ Content-Type: application/json
     "status": "received"
 }
 
-### PATH add items to the details of an order
+### PATCH add items to the details of an order
 PATCH http://localhost:3000/orders/ORD-98765ZYX/order-details/items
 Content-Type: application/json
 

@@ -1,4 +1,4 @@
-import {Router} from 'express';
+import { Router } from 'express';
 import { orderController } from '../controllers/orders.js';
 
 
@@ -16,4 +16,6 @@ ordersRouter.put("/:trackerNumber", orderController.update);
 ordersRouter.patch("/:trackerNumber/status", orderController.updateStatus);
 // PATCH /orders/:id/order-details/items (ADD ITEM)
 ordersRouter.patch("/:trackerNumber/order-details/items", orderController.addOrderDetailItem);
+// DELETE /orders/:id/order-details/items/:itemId
+
 // DELETE /orders/:id

@@ -6,10 +6,6 @@ const itemSchema = zod.object({
     quantity: zod.number().positive(),
     pricePerItem: zod.number().positive(),
 });
-const statusUpdateSchema = zod.object({
-    timestamp: zod.date(),
-    update: zod.string(),
-});
 
 const orderSchema = zod.object({
     trackerNumber: zod.string(),
@@ -23,7 +19,6 @@ const orderSchema = zod.object({
         items: zod.array(itemSchema),
     }),
     status: zod.enum(['received', 'preparing', 'out for delivery', 'delivered']),
-    statusUpdates: zod.array(statusUpdateSchema),
 });
 
 const validateOrder = (order) => {
@@ -52,7 +47,6 @@ const orderUpdateSchema = zod.object({
         items: zod.array(itemSchema).optional(),
     }).optional(),
     status: zod.enum(['received', 'preparing', 'out for delivery', 'delivered']).optional(),
-    statusUpdates: zod.array(statusUpdateSchema).optional(),
 });
 
 const validateOrderUpdate = (order) => {
