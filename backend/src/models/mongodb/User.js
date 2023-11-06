@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 const userSchema = new mongoose.Schema({
-    userSchema: {
+    username: {
         type: String,
         required: true,
     },
@@ -24,5 +24,14 @@ userSchema.set('toJSON', {
     }
 });
 
-const User = mongoose.model('User', userSchema);
-export default User;
+class User {
+    static async create({ username, password }) {
+        const user = new UserModel({ username, password });
+        await user.save();
+        return user;
+    }
+}
+
+userSchema.loadClass(User);
+const UserModel = mongoose.model('User', userSchema);
+export default UserModel
