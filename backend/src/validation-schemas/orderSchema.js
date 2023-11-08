@@ -28,7 +28,6 @@ const validateOrder = (order) => {
     }));
 
     const validationResult = orderSchema.safeParse(order);
-    console.log("Se valido el pedido");
     if (!validationResult.success) {
         console.log(validationResult.error);
     }

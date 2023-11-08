@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import UserModel from './User.js';
 
 const itemSchema = new mongoose.Schema({
     itemName: {
@@ -72,10 +73,20 @@ const orderSchema = new mongoose.Schema({
 });
 
 class Order {
-    static async createOrder({input}) {
+    static async createOrder({input, userId}) {
         try {
-            const order = new this(input);
+            const user = await UserModel.findById(userId);
+            if (!user) {
+                throw new Error("User not found");
+            }
+            
+            const order = new this({...input, user: userId});
             await order.save();
+
+            user.orders.push(order._id)
+            await user.save();
+
+
             return order;
         } catch (err) {
             throw err;

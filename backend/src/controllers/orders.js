@@ -3,8 +3,9 @@ import { validateOrder, validateOrderUpdate, validateStatusUpdate, validateOrder
 export class orderController{
     static async create(req, res, next){
         try{
-            const validatedOrder = validateOrder(req.body);
-            const order = await OrderModel.createOrder({input: validatedOrder});
+            const {userId, ...orderData} = req.body;
+            const validatedOrder = validateOrder(orderData);
+            const order = await OrderModel.createOrder({input: validatedOrder, userId});
             res.status(201).json(order);
         } catch (err) {
             next(err)
@@ -50,4 +51,17 @@ export class orderController{
             next(err)
         }
     }
+    static async findOrderByTrackerNumber(req, res, next){
+        try{
+            const { trackerNumber } = req.params;
+            const order = await OrderModel.findOne({ trackerNumber }).populate('orderDetails.items');
+            if (!order) {
+                return res.status(404).json({ message: "Order not found" });
+            }
+            res.status(200).json(order);
+        } catch (err) {
+            next(err)
+        }
+    }
+
 }

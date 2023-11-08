@@ -2,7 +2,8 @@
 POST http://localhost:3000/orders
 Content-Type: application/json
 
-{
+{   
+    "userId": "654bccbc886dd15aeaadacd9",
     "trackerNumber": "ORD-98765ZYX",
     "costumerInfo": {
         "name": "Jane Smith",
