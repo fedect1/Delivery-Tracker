@@ -1,6 +1,14 @@
 import OrderModel from '../models/mongodb/order.js';
 import { validateOrder, validateOrderUpdate, validateStatusUpdate, validateOrderDetails } from '../validation-schemas/orderSchema.js';
 export class orderController{
+    static async findAll(req, res, next){
+        try{
+            const orders = await OrderModel.findAll();
+            res.status(200).json(orders);
+        } catch (err) {
+            next(err)
+        }
+    }
     static async create(req, res, next){
         try{
             const {userId, ...orderData} = req.body;

@@ -73,6 +73,18 @@ const orderSchema = new mongoose.Schema({
 });
 
 class Order {
+    static async findAll() {
+        try {
+            const orders = await this.find().populate('user',
+            {
+                _id: 1,
+                username: 1,
+            });
+            return orders;
+        } catch (err) {
+            throw err;
+        } 
+    }
     static async createOrder({input, userId}) {
         try {
             const user = await UserModel.findById(userId);
