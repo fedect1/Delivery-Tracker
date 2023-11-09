@@ -15,7 +15,7 @@ export class usersController{
     }
     static async read(req, res,next){
         try{
-            const users = await UserModel.find({});
+            const users = await UserModel.findAll();
             res.status(200).json(users);
         }catch(err){
             next(err);
