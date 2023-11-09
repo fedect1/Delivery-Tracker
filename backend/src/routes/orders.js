@@ -6,7 +6,8 @@ export const ordersRouter = Router();
 
 
 
-// GET /orders
+// GET /track/:trackerNumber
+ordersRouter.get("/track/:trackerNumber", orderController.findOrderByTrackerNumber);
 // GET /orders/:id
 // POST /orders
 ordersRouter.post("/", orderController.create);
