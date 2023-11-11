@@ -20,3 +20,11 @@ export const connectToMongoDB = () => {
         .then(() => console.log("Connected to MongoDB"))
         .catch((err) => console.log(err));
 }
+
+
+process.on("uncaughtException", (err) => {
+    console.log("Uncaught exception! Shutting down...");
+    console.log(err.name, err.message);
+    process.exit(1);
+    }
+)
