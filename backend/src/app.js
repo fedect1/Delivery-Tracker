@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import { usersRouter } from './routes/users.js';
 import { ordersRouter } from './routes/orders.js';
+import { loginRouter } from './routes/login.js';
 import { connectToMongoDB } from './database-connection.js';
 import { notFound } from './middleware/notFound.js';
 import {errorHandler} from './middleware/errorHandler.js';
@@ -14,6 +15,7 @@ app.disable("x-powered-by");
 connectToMongoDB();
 
 app.use("/users", usersRouter);
+app.use("/login", loginRouter);
 app.use("/orders", ordersRouter);
 
 app.use(notFound);
