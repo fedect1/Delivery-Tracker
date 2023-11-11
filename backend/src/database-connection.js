@@ -3,8 +3,11 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
+const { MONGODB_URI_DEV, MONGODB_URI_TEST, NODE_ENV } = process.env;
+const connectString = NODE_ENV === "test" ? MONGODB_URI_TEST : MONGODB_URI_DEV;
+
 export const connectToMongoDB = () => {
-    mongoose.connect(process.env.MONGODB_CONNECTION_STRING,
+    mongoose.connect(connectString,
         {
             useNewUrlParser: true,
             useUnifiedTopology: true,

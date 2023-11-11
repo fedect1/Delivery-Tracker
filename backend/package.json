@@ -2,11 +2,19 @@
   "name": "delivery-tracker",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "src/app.js",
   "type": "module",
   "scripts": {
-    "dev": "nodemon ./src/app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "cross-env NODE_ENV=development nodemon app.js",
+    "start": "cross-env NODE_ENV=production node app.js",
+    "test": "cross-env NODE_ENV=test PORT=3002 jest --verbose --silent",
+    "test:watch": "npm run test -- --watch"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.js$": "babel-jest"
+    },
+    "testEnvironment": "node"
   },
   "keywords": [],
   "author": "",
@@ -20,7 +28,12 @@
     "zod": "3.22.4"
   },
   "devDependencies": {
+    "@babel/core": "^7.23.3",
+    "@babel/preset-env": "^7.23.3",
+    "babel-jest": "^29.7.0",
+    "cross-env": "7.0.3",
     "jest": "29.7.0",
-    "nodemon": "3.0.1"
+    "nodemon": "3.0.1",
+    "supertest": "6.3.3"
   }
 }

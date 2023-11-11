@@ -5,7 +5,8 @@ import { orderController } from '../controllers/orders.js';
 export const ordersRouter = Router();
 
 
-
+// GET /orders
+ordersRouter.get("/", orderController.findAll);
 // GET /track/:trackerNumber
 ordersRouter.get("/track/:trackerNumber", orderController.findOrderByTrackerNumber);
 // GET /orders/:id
