@@ -1,4 +1,5 @@
 import OrderModel from '../models/mongodb/order.js';
+import jwt from 'jsonwebtoken';
 import { validateOrder, validateOrderUpdate, validateStatusUpdate, validateOrderDetails } from '../validation-schemas/orderSchema.js';
 export class orderController{
     static async findAll(req, res, next){
@@ -11,7 +12,22 @@ export class orderController{
     }
     static async create(req, res, next){
         try{
-            const {userId, ...orderData} = req.body;
+            const {...orderData} = req.body;
+            const authorization = req.get('authorization');
+            const token = authorization && authorization.toLowerCase().startsWith('bearer ') ? authorization.substring(7) : null;
+            let decodedToken = {}
+            try{
+                decodedToken = jwt.verify(token, process.env.SECRET_KEY);
+            } catch (err) {
+                return res.status(401).json({ message: 'token missing or invalid' });
+            }
+            if (!token || !decodedToken.id) {
+                return res.status(401).json({ message: 'token missing or invalid' });
+            }
+            const {id: userId} = decodedToken;
+            if(userId && userId !== decodedToken.id){
+                return res.status(401).json({ message: 'token missing or invalid' });
+            }
             const validatedOrder = validateOrder(orderData);
             const order = await OrderModel.createOrder({input: validatedOrder, userId});
             res.status(201).json(order);

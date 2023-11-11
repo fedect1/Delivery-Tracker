@@ -1,10 +1,10 @@
 ### Create a new order with MongoDB Schema
 POST http://localhost:3000/orders
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXIxIiwiaWQiOiI2NTRiY2NiYzg4NmRkMTVhZWFhZGFjZDkiLCJpYXQiOjE2OTk3MzU1MDd9.JRtMWisC4CI4aRIARgPMy1Y2vHrHfOtWNOKu_yUzbgs
 
 {   
-    "userId": "654bccbc886dd15aeaadacd9",
-    "trackerNumber": "ORD-98765ZYO",
+    "trackerNumber": "ORD-98765ZYA1O",
     "costumerInfo": {
         "name": "Jane Smith",
         "phone": "987-654-3210",

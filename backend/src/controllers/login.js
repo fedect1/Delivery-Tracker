@@ -16,7 +16,7 @@ export class loginController{
                 id: user._id
             };
 
-            const token = jwt.sign(userForToken, process.env.SECRET_KEY);
+            const token = jwt.sign(userForToken, process.env.SECRET_KEY, { expiresIn: 60 * 60 * 24 * 7 });
 
             res.status(200).json({ token, username: user.username });
         } catch(error){
