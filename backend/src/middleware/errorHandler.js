@@ -1,6 +1,10 @@
 export const errorHandler = (err, req, res, next) => {
     console.error(err.stack);
 
+    if (err.type === 'ZodError') {
+        return res.status(400).json({ message: 'Validation failed', errors: err.errors });
+    }
+
     if (err instanceof mongoose.Error.ValidationError) {
       
         return res.status(400).json({ message: 'Validation failed', errors: err.errors });
