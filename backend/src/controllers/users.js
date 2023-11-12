@@ -12,9 +12,9 @@ export class usersController{
                 ZodError.errors = validatedUser.error;
                 throw ZodError;
             }
-            const { username, password } = validatedUser.data;
+            const { username, email, password } = validatedUser.data;
             const passwordHash = await bcrypt.hash(password, 10);
-            const user = await UserModel.create({ username, password: passwordHash });
+            const user = await UserModel.create({ username, email, password: passwordHash });
 
             res.status(201).json(user);
         }catch(err){
