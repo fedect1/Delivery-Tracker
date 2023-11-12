@@ -1,10 +1,10 @@
 ### Create a new order with MongoDB Schema
 POST http://localhost:3000/orders
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXIxIiwiaWQiOiI2NTRiY2NiYzg4NmRkMTVhZWFhZGFjZDkiLCJpYXQiOjE2OTk3MzU1MDd9.JRtMWisC4CI4aRIARgPMy1Y2vHrHfOtWNOKu_yUzbgs
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im51ZXZvIHVzYXJpbyAzIiwiaWQiOiI2NTUxMTYyZTFmZmYwOTNlZWQ5YmY0MDkiLCJpYXQiOjE2OTk4MTU5MzksImV4cCI6MTcwMDQyMDczOX0.Lko_l1i7IrPDfslJOQMeGBatilET5MQYeQM7LDWKwxs
 
 {   
-    "trackerNumber": "ORD-98765ZYA1O",
+    "trackerNumber": "ORD-98765ZYA1OAAA",
     "costumerInfo": {
         "name": "Jane Smith",
         "phone": "987-654-3210",

@@ -16,7 +16,11 @@ export class usersController{
             const passwordHash = await bcrypt.hash(password, 10);
             const user = await UserModel.create({ username, email, password: passwordHash });
 
-            res.status(201).json(user);
+            res.status(201).json({
+                ok: true,
+                uid: user._id,
+                username: user.username,
+            });
         }catch(err){
             next(err);
         }

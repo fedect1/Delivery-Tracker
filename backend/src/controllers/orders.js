@@ -12,23 +12,8 @@ export class orderController{
     }
     static async create(req, res, next){
         try{
-            const {...orderData} = req.body;
-            const authorization = req.get('authorization');
-            const token = authorization && authorization.toLowerCase().startsWith('bearer ') ? authorization.substring(7) : null;
-            let decodedToken = {}
-            try{
-                decodedToken = jwt.verify(token, process.env.SECRET_KEY);
-            } catch (err) {
-                return res.status(401).json({ message: 'token missing or invalid' });
-            }
-            if (!token || !decodedToken.id) {
-                return res.status(401).json({ message: 'token missing or invalid' });
-            }
-            const {id: userId} = decodedToken;
-            if(userId && userId !== decodedToken.id){
-                return res.status(401).json({ message: 'token missing or invalid' });
-            }
-            const validatedOrder = validateOrder(orderData);
+            const validatedOrder = validateOrder(req.body);
+            const userId = req.userId;
             const order = await OrderModel.createOrder({input: validatedOrder, userId});
             res.status(201).json(order);
         } catch (err) {

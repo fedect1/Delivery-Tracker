@@ -5,8 +5,8 @@ import jwt from 'jsonwebtoken';
 export class loginController{
     static async login(req, res, next){
         try{
-            const { username, password } = req.body;
-            const user = await UserModel.findOne({ username });
+            const { email, password } = req.body;
+            const user = await UserModel.findOne({ email });
             const passwordMatch = user===null ? false : await bcrypt.compare(password, user.password);
             if(!(user && passwordMatch)){
                 return res.status(401).json({ message: "Invalid credentials" });
