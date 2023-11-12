@@ -6,7 +6,13 @@ export class usersController{
     static async create(req, res, next){
         try{
             const validatedUser = validateUser(req.body);
-            const { username, password } = validatedUser;
+            if (!validatedUser.success) {
+                const ZodError = new Error('Validation failed');
+                ZodError.type = 'ZodError';
+                ZodError.errors = validatedUser.error;
+                throw ZodError;
+            }
+            const { username, password } = validatedUser.data;
             const passwordHash = await bcrypt.hash(password, 10);
             const user = await UserModel.create({ username, password: passwordHash });
 

@@ -9,9 +9,5 @@ const userSchema = z.object({
 });
 
 export const validateUser = (user) => {
-    const validationResult = userSchema.safeParse(user);
-    if (!validationResult.success) {
-        console.log(validationResult.error);
-    }
-    return validationResult.data;
+    return userSchema.safeParse(user);
 }
