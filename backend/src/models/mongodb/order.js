@@ -35,7 +35,8 @@ const orderSchema = new mongoose.Schema({
     },
     user:{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
+        ref: 'User',
+        required: true,
     },
     costumerInfo: {
         name: {
@@ -112,9 +113,15 @@ class Order {
             throw err;
         } 
     }
-    static async updateStatus({trackerNumber, input}) {
+    static async updateStatus({trackerNumber, input, userId}) {
         try {
             const order = await this.findOne({ trackerNumber });
+            if (!order) {
+                throw new Error("Order not found");
+            }
+            if (order.user.toString() !== userId) {
+                throw new Error("You are not authorized to update this order");
+            }
             order.status = input.status;
             order.statusUpdates.push({
                 timestamp: new Date(),

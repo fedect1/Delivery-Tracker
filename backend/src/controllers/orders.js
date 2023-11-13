@@ -37,7 +37,8 @@ export class orderController{
         try{
             const { trackerNumber } = req.params;
             const validatedInput = validateStatusUpdate(req.body);
-            const order = await OrderModel.updateStatus({trackerNumber, input: validatedInput});
+            const userId = req.userId;
+            const order = await OrderModel.updateStatus({trackerNumber, input: validatedInput, userId});
             if (!order) {
                 return res.status(404).json({ message: "Order not found" });
             }
