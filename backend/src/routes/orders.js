@@ -5,7 +5,7 @@ import { jwtValidation } from '../middleware/jwt-validation.js';
 
 export const ordersRouter = Router();
 
-
+ordersRouter.use(jwtValidation);
 // GET /orders
 ordersRouter.get("/", orderController.findAll);
 // GET /track/:trackerNumber
