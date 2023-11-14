@@ -66,6 +66,7 @@ const orderSchema = new mongoose.Schema({
         type: String,
         enum: ['received', 'preparing', 'out for delivery', 'delivered'],
         required: true,
+        default: 'received',
     },
     statusUpdates: {
         type: [statusUpdateSchema],
@@ -89,7 +90,7 @@ class Order {
 
     static async findOrderByTrackerNumber(trackerNumber) {
         try {
-            const order = await this.findOne({ trackerNumber }).populate('user',
+            const order = await this.findOne({ trackerNumber }, { _id:0, __v:0 }).populate('user',
             {
                 username: 1,
                 _id: 0,

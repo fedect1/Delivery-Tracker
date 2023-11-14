@@ -64,11 +64,7 @@ export class orderController{
     static async findOrderByTrackerNumber(req, res, next){
         try{
             const { trackerNumber } = req.params;
-            const order = await OrderModel.findOne({ trackerNumber }).populate('userId',
-            {
-                _id: 1,
-                username: 1,
-            });
+            const order = await OrderModel.findOrderByTrackerNumber(trackerNumber);
             if (!order) {
                 return res.status(404).json({ message: "Order not found" });
             }
