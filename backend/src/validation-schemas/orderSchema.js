@@ -18,15 +18,9 @@ const orderSchema = zod.object({
     orderDetails: zod.object({
         items: zod.array(itemSchema),
     }),
-    status: zod.enum(['received', 'preparing', 'out for delivery', 'delivered']),
 });
 
 const validateOrder = (order) => {
-    order.statusUpdates = order.statusUpdates.map(update => ({
-        ...update,
-        timestamp: new Date(update.timestamp),
-    }));
-
     const validationResult = orderSchema.safeParse(order);
     if (!validationResult.success) {
         console.log(validationResult.error);

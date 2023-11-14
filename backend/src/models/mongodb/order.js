@@ -20,10 +20,12 @@ const statusUpdateSchema = new mongoose.Schema({
     timestamp: {
         type: Date,
         required: true,
+        default: Date.now,
     },
     update: {
         type: String,
         required: true,
+        default: 'received',
     }
 }, {_id: false});
 
@@ -107,7 +109,7 @@ class Order {
                 throw new Error("User not found");
             }
             
-            const order = new this({...input, user: userId});
+            const order = new this({...input, user: userId, statusUpdates: [{update: 'received'}]});
             await order.save();
 
             user.orders.push(order._id)
