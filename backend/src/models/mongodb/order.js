@@ -74,17 +74,30 @@ const orderSchema = new mongoose.Schema({
 });
 
 class Order {
-    static async findAll() {
+    static async findAll(userId) {
         try {
-            const orders = await this.find().populate('user',
+
+            const orders = await this.find({user: userId}).populate('user',
             {
-                _id: 1,
                 username: 1,
             });
             return orders;
         } catch (err) {
             throw err;
         } 
+    }
+
+    static async findOrderByTrackerNumber(trackerNumber) {
+        try {
+            const order = await this.findOne({ trackerNumber }).populate('user',
+            {
+                username: 1,
+                _id: 0,
+            });
+            return order;
+        } catch (err) {
+            throw err;
+        }
     }
     static async createOrder({input, userId}) {
         try {

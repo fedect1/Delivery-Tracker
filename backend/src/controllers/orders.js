@@ -1,10 +1,10 @@
 import OrderModel from '../models/mongodb/order.js';
-import jwt from 'jsonwebtoken';
 import { validateOrder, validateOrderUpdate, validateStatusUpdate, validateOrderDetails } from '../validation-schemas/orderSchema.js';
 export class orderController{
     static async findAll(req, res, next){
         try{
-            const orders = await OrderModel.findAll();
+            const userId = req.userId;
+            const orders = await OrderModel.findAll(userId);
             res.status(200).json(orders);
         } catch (err) {
             next(err)
