@@ -121,14 +121,6 @@ class Order {
             throw err;
         } 
     }
-    static async update({trackerNumber, input}) {
-        try {
-            const order = await this.findOneAndUpdate({ trackerNumber }, input, { new: true });
-            return order;
-        } catch (err) {
-            throw err;
-        } 
-    }
     static async updateStatus({trackerNumber, input, userId}) {
         try {
             const order = await this.findOne({ trackerNumber });
@@ -149,26 +141,22 @@ class Order {
             throw err;
         } 
     }
-    static async updateOrderDetails({trackerNumber, input}) {
+    static async deleteOrder({id, userId}) {
         try {
-            const order = await this.findOne({ trackerNumber });
-            order.orderDetails = input.orderDetails;
-            await order.save();
-            return order;
+            const order = await this.findById(id);
+            if (order.user.toString() !== userId) {
+                throw new Error("You are not authorized to delete this order");
+            }
+            if (!order) {
+                throw new Error("Order not found");
+            }
+            await this.findByIdAndDelete(id);
+            return { message: "Order successfully deleted" }
         } catch (err) {
             throw err;
         } 
     }
-    static async addOrderDetailItem({trackerNumber, input}) {
-        try {
-            const order = await this.findOne({ trackerNumber });
-            order.orderDetails.items.push(input.item);
-            await order.save();
-            return order;
-        } catch (err) {
-            throw err;
-        } 
-    }
+
 }
 
 orderSchema.loadClass(Order);
