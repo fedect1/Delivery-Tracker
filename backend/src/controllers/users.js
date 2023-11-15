@@ -1,14 +1,26 @@
 import UserModel from '../models/mongodb/User.js';
 import bcrypt from 'bcrypt';
+import { validateUser } from '../validation-schemas/userSchema.js';
 
 export class usersController{
     static async create(req, res, next){
         try{
-            const { username, password } = req.body;
+            const validatedUser = validateUser(req.body);
+            if (!validatedUser.success) {
+                const ZodError = new Error('Validation failed');
+                ZodError.type = 'ZodError';
+                ZodError.errors = validatedUser.error;
+                throw ZodError;
+            }
+            const { username, email, password } = validatedUser.data;
             const passwordHash = await bcrypt.hash(password, 10);
-            const user = await UserModel.create({ username, password: passwordHash });
+            const user = await UserModel.create({ username, email, password: passwordHash });
 
-            res.status(201).json(user);
+            res.status(201).json({
+                ok: true,
+                uid: user._id,
+                username: user.username,
+            });
         }catch(err){
             next(err);
         }

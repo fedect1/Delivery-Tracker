@@ -3,7 +3,8 @@ import { validateOrder, validateOrderUpdate, validateStatusUpdate, validateOrder
 export class orderController{
     static async findAll(req, res, next){
         try{
-            const orders = await OrderModel.findAll();
+            const userId = req.userId;
+            const orders = await OrderModel.findAll(userId);
             res.status(200).json(orders);
         } catch (err) {
             next(err)
@@ -11,32 +12,21 @@ export class orderController{
     }
     static async create(req, res, next){
         try{
-            const {userId, ...orderData} = req.body;
-            const validatedOrder = validateOrder(orderData);
+            const validatedOrder = validateOrder(req.body);
+            const userId = req.userId;
             const order = await OrderModel.createOrder({input: validatedOrder, userId});
             res.status(201).json(order);
         } catch (err) {
             next(err)
         }
     }
-    static async update(req, res, next){
-        try{
-            const { trackerNumber } = req.params;
-            const validatedInput = validateOrderUpdate(req.body);
-            const order = await OrderModel.update({trackerNumber, input: validatedInput});
-            if (!order) {
-                return res.status(404).json({ message: "Order not found" });
-            }
-            res.status(200).json(order);
-        } catch (err) {
-            next(err)
-        }
-    }
+
     static async updateStatus(req, res, next){
         try{
             const { trackerNumber } = req.params;
             const validatedInput = validateStatusUpdate(req.body);
-            const order = await OrderModel.updateStatus({trackerNumber, input: validatedInput});
+            const userId = req.userId;
+            const order = await OrderModel.updateStatus({trackerNumber, input: validatedInput, userId});
             if (!order) {
                 return res.status(404).json({ message: "Order not found" });
             }
@@ -45,32 +35,29 @@ export class orderController{
             next(err)
         }
     }
-    static async addOrderDetailItem(req, res){
-        try{
-
-            const { trackerNumber } = req.params;
-            const validatedInput = validateOrderDetails(req.body);
-            const order = await OrderModel.addOrderDetailItem({trackerNumber, input: validatedInput});
-            if (!order) {
-                return res.status(404).json({ message: "Order not found" });
-            }
-            res.status(200).json(order);
-        } catch (err) {
-            next(err)
-        }
-    }
+    
     static async findOrderByTrackerNumber(req, res, next){
         try{
             const { trackerNumber } = req.params;
-            const order = await OrderModel.findOne({ trackerNumber }).populate('userId',
-            {
-                _id: 1,
-                username: 1,
-            });
+            const order = await OrderModel.findOrderByTrackerNumber(trackerNumber);
             if (!order) {
                 return res.status(404).json({ message: "Order not found" });
             }
             res.status(200).json(order);
+        } catch (err) {
+            next(err)
+        }
+    }
+
+    static async deleteOrder(req, res, next){
+        try{
+            const { id } = req.params;
+            const userId = req.userId;
+            const order = await OrderModel.deleteOrder({id, userId});
+            if (!order) {
+                return res.status(404).json({ message: "Order not found" });
+            }
+            res.status(204)
         } catch (err) {
             next(err)
         }

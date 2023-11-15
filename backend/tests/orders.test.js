@@ -8,15 +8,20 @@ import { initialOrders, initialUsers } from './test_helper.js';
 const api = supertest(app);
 
 beforeEach(async () => {
-    await OrderModel.deleteMany({});
+    const userId = [];
     await UserModel.deleteMany({});
-    for (const order of initialOrders) {
-    const orderObject = new OrderModel(order);
-    await orderObject.save();
-    }
+    await OrderModel.deleteMany({});
     for (const user of initialUsers) {
         const userObject = new UserModel(user);
-        await userObject.save();
+        const savedUser = await userObject.save();
+        userId.push(savedUser._id.toString());
+    }
+    for (const [index, order] of initialOrders.entries()) {
+        if (userId[index]) {
+            order.userId = userId[index];
+        }   
+        const orderObject = new OrderModel(order);
+        await orderObject.save();
     }
 })
 

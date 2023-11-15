@@ -1,6 +1,5 @@
 const initialOrders = [
     {   
-        "userId": "654bccbc886dd15aeaadacd9",
         "trackerNumber": "ORD-98765ZYX",
         "costumerInfo": {
             "name": "Jane Smith",
@@ -37,7 +36,6 @@ const initialOrders = [
         ]
     },
     {
-        "userId": "654bccbc886dd15aeaadacd9",
         "trackerNumber": "ORD-12345ABC",
         "costumerInfo": {
             "name": "John Smith",
@@ -76,8 +74,14 @@ const initialOrders = [
 ]
 const initialUsers = [
     {
-        "username": "fede",
-        "password": "123456789",
-    }
+        "username": "user1",
+        "email": "user1@gmail.com",
+        "password": "123456789Ab#",
+    },
+    {
+        "username": "user2",
+        "email": "user2@gmail.com",
+        "password": "123456789Ab*",
+    },
 ]
 export {initialOrders, initialUsers}

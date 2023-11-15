@@ -20,10 +20,12 @@ const statusUpdateSchema = new mongoose.Schema({
     timestamp: {
         type: Date,
         required: true,
+        default: Date.now,
     },
     update: {
         type: String,
         required: true,
+        default: 'received',
     }
 }, {_id: false});
 
@@ -35,7 +37,8 @@ const orderSchema = new mongoose.Schema({
     },
     user:{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
+        ref: 'User',
+        required: true,
     },
     costumerInfo: {
         name: {
@@ -65,6 +68,7 @@ const orderSchema = new mongoose.Schema({
         type: String,
         enum: ['received', 'preparing', 'out for delivery', 'delivered'],
         required: true,
+        default: 'received',
     },
     statusUpdates: {
         type: [statusUpdateSchema],
@@ -73,17 +77,30 @@ const orderSchema = new mongoose.Schema({
 });
 
 class Order {
-    static async findAll() {
+    static async findAll(userId) {
         try {
-            const orders = await this.find().populate('user',
+
+            const orders = await this.find({user: userId}).populate('user',
             {
-                _id: 1,
                 username: 1,
             });
             return orders;
         } catch (err) {
             throw err;
         } 
+    }
+
+    static async findOrderByTrackerNumber(trackerNumber) {
+        try {
+            const order = await this.findOne({ trackerNumber }, { _id:0, __v:0 }).populate('user',
+            {
+                username: 1,
+                _id: 0,
+            });
+            return order;
+        } catch (err) {
+            throw err;
+        }
     }
     static async createOrder({input, userId}) {
         try {
@@ -92,7 +109,7 @@ class Order {
                 throw new Error("User not found");
             }
             
-            const order = new this({...input, user: userId});
+            const order = new this({...input, user: userId, statusUpdates: [{update: 'received'}]});
             await order.save();
 
             user.orders.push(order._id)
@@ -104,17 +121,15 @@ class Order {
             throw err;
         } 
     }
-    static async update({trackerNumber, input}) {
-        try {
-            const order = await this.findOneAndUpdate({ trackerNumber }, input, { new: true });
-            return order;
-        } catch (err) {
-            throw err;
-        } 
-    }
-    static async updateStatus({trackerNumber, input}) {
+    static async updateStatus({trackerNumber, input, userId}) {
         try {
             const order = await this.findOne({ trackerNumber });
+            if (!order) {
+                throw new Error("Order not found");
+            }
+            if (order.user.toString() !== userId) {
+                throw new Error("You are not authorized to update this order");
+            }
             order.status = input.status;
             order.statusUpdates.push({
                 timestamp: new Date(),
@@ -126,26 +141,22 @@ class Order {
             throw err;
         } 
     }
-    static async updateOrderDetails({trackerNumber, input}) {
+    static async deleteOrder({id, userId}) {
         try {
-            const order = await this.findOne({ trackerNumber });
-            order.orderDetails = input.orderDetails;
-            await order.save();
-            return order;
+            const order = await this.findById(id);
+            if (order.user.toString() !== userId) {
+                throw new Error("You are not authorized to delete this order");
+            }
+            if (!order) {
+                throw new Error("Order not found");
+            }
+            await this.findByIdAndDelete(id);
+            return { message: "Order successfully deleted" }
         } catch (err) {
             throw err;
         } 
     }
-    static async addOrderDetailItem({trackerNumber, input}) {
-        try {
-            const order = await this.findOne({ trackerNumber });
-            order.orderDetails.items.push(input.item);
-            await order.save();
-            return order;
-        } catch (err) {
-            throw err;
-        } 
-    }
+
 }
 
 orderSchema.loadClass(Order);
