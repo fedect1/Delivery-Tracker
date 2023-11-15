@@ -1,24 +1,17 @@
-import mongoose from 'mongoose';
+
 import supertest from 'supertest';
-import OrderModel from '../src/models/mongodb/order.js';
 import UserModel from '../src/models/mongodb/User.js';
 import { app, server } from '../src/app.js';
-import { initialOrders, initialUsers } from './test_helper.js';
 
+import bcrypt from 'bcrypt';
 
 const api = supertest(app);
-test('works as expected creating a valid user', async () => {
-    const newUser = {
-        "username": "raul",
-        "password": "123456"
-    }
-    await api
-        .post('/users')
-        .send(newUser)
-        .expect(201)
-        .expect('Content-Type', /application\/json/)
-    const usersAtEnd = await UserModel.find({});
-    expect(usersAtEnd).toHaveLength(initialUsers.length + 1);
-    const usernames = usersAtEnd.map(user => user.username);
-    expect(usernames).toContain(newUser.username);
+describe
+beforeEach(async () => {
+    await UserModel.deleteMany({});
+
+    const passwordHash = await bcrypt.hash('123456#Ab', 10);
+    const user = new UserModel({ username: 'usuario3', email:'user3@gmail.com', password: passwordHash });
+    
+    await user.save();
 })
