@@ -45,7 +45,7 @@ describe('User tests', () => {
             .expect(409)
             .expect('Content-Type', /application\/json/)
             .expect(response => {
-                expect(response.body.message).toContain('Duplicate key error');
+                expect(response.body.message).toContain('User with this username already exists');
             }) 
     })
 
@@ -56,7 +56,7 @@ describe('User tests', () => {
             .expect(409)
             .expect('Content-Type', /application\/json/)
             .expect(response => {
-                expect(response.body.message).toContain('Duplicate key error');
+                expect(response.body.message).toContain('User with this email already exists');
             })
     })
 
@@ -67,7 +67,7 @@ describe('User tests', () => {
             .expect(400)
             .expect('Content-Type', /application\/json/)
             .expect(response => {
-                expect(response.body.message).toContain('Validation failed');
+                expect(response.body.message).toBe('Validation failed: Password must be at least 8 characters long, Password must contain at least one lowercase letter, one uppercase letter, one number and one special character');
             })
     })
 
@@ -78,7 +78,7 @@ describe('User tests', () => {
             .expect(400)
             .expect('Content-Type', /application\/json/)
             .expect(response => {
-                expect(response.body.message).toContain('Validation failed');
+                expect(response.body.message).toBe('Validation failed: Invalid email');
             })
     })
 
@@ -89,9 +89,10 @@ describe('User tests', () => {
             .expect(400)
             .expect('Content-Type', /application\/json/)
             .expect(response => {
-                expect(response.body.message).toContain('Validation failed');
+                expect(response.body.message).toBe('Validation failed: Name must be at least 3 characters long');
             })
     })
+
 
 
     afterAll(() => {
