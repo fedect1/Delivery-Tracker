@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "cross-env NODE_ENV=development nodemon app.js",
     "start": "cross-env NODE_ENV=production node app.js",
-    "test": "cross-env NODE_ENV=test PORT=3002 jest --verbose --silent ./tests/users.test.js",
+    "test": "cross-env NODE_ENV=test PORT=3002 jest --verbose ./tests/users.test.js",
     "test:watch": "npm run test -- --watch"
   },
   "jest": {

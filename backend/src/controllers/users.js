@@ -8,7 +8,6 @@ export class usersController{
 
             const validatedUser = validateUser(req.body);
             if (!validatedUser.success) {
-                console.log(validatedUser.error)
                 const errorMessages = validatedUser.error.issues.map((issue) => issue.message);
                 const combinedErrorMessage = `Validation failed: ${errorMessages.join(', ')}`;
                 const error = new Error(combinedErrorMessage);
@@ -31,14 +30,6 @@ export class usersController{
                 err = new Error(message);
                 err.type = 'DuplicateError';
             }
-            next(err);
-        }
-    }
-    static async read(req, res,next){
-        try{
-            const users = await UserModel.findAll();
-            res.status(200).json(users);
-        }catch(err){
             next(err);
         }
     }

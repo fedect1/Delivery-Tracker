@@ -42,16 +42,6 @@ class User {
         await user.save();
         return user;
     }
-    static async findAll() {
-        return UserModel.find({}).populate('orders',
-        {
-            _id: 1,
-            costumerInfo: 1,
-            trackerNumber: 1,
-            status: 1,
-            statusUpdates: 1,
-        });
-    }
 }
 
 userSchema.loadClass(User);
