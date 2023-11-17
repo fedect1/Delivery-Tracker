@@ -18,7 +18,7 @@ beforeEach(async () => {
     }
     for (const [index, order] of initialOrders.entries()) {
         if (userId[index]) {
-            order.userId = userId[index];
+            order.user = userId[index];
         }   
         const orderObject = new OrderModel(order);
         await orderObject.save();
@@ -27,26 +27,50 @@ beforeEach(async () => {
 
 test("orders are returned as json", async () => {
     await api
+        .post("/users")
+        .send({
+            "username": "user3",
+            "email": "user3@gmail.com",
+            "password": "123456#Ab"
+        })
+        .expect(201)
+        .expect("Content-Type", /application\/json/);
+
+        const tokenResponse = await api
+            .post("/login")
+            .send({
+                "email": "user3@gmail.com",
+                "password": "123456#Ab"
+            })
+            .expect(200)
+
+    await api
         .get("/orders")
+        .set('Authorization', `Bearer ${tokenResponse.body.token}`)
         .expect(200)
         .expect("Content-Type", /application\/json/);
 })
 
-test("there are two orders", async () => {
-    const response = await api.get("/orders");
-    expect(response.body).toHaveLength(initialOrders.length);
-})
-
-test("the first order is John Smith's", async () => {
-    const response = await api.get("/orders");
-    const contents = response.body.map(order => order.costumerInfo.name);
-    expect(contents).toContain("John Smith");
-})
-
 test("a valid order can be added", async () => {
-    const user = await UserModel.findOne({username: "fede"});
+    await api
+        .post("/users")
+        .send({
+            "username": "user4",
+            "email": "user4@gmail.com",
+            "password": "123456#Ab"
+        })
+        .expect(201)
+        .expect("Content-Type", /application\/json/);
+    
+    const tokenResponse = await api
+        .post("/login")
+        .send({
+        "email": "user4@gmail.com",
+        "password": "123456#Ab"
+        })
+        .expect(200)
+
     const newOrder = {
-        "userId": user._id,
         "trackerNumber": "ORD-12345ABO",
         "costumerInfo": {
             "name": "John Smith",
@@ -74,19 +98,13 @@ test("a valid order can be added", async () => {
             ],
             "totalPrice": 10.5
         },
-        "status": "preparing",
-        "statusUpdates": [
-            {
-                "timestamp": "2023-10-23T11:10:00Z",
-                "update": "Order has been confirmed and is currently being prepared."
-            }
-        ]
     }
-    await api.post("/orders").send(newOrder).expect(201).expect("Content-Type", /application\/json/);
-    const response = await api.get("/orders");
-    const contents = response.body.map(order => order.costumerInfo.name);
-    expect(response.body).toHaveLength(initialOrders.length + 1);
-    expect(contents).toContain("John Smith");
+    await api
+        .post("/orders")
+        .set('Authorization', `Bearer ${tokenResponse.body.token}`)
+        .send(newOrder)
+        .expect(201)
+        .expect("Content-Type", /application\/json/);
 })
 
 

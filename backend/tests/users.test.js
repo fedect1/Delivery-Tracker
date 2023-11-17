@@ -101,7 +101,8 @@ describe('User tests', () => {
             .expect(201)
             .expect('Content-Type', /application\/json/);
 
-        const tokenResponse = await api.post('/login')
+        const tokenResponse = await api
+            .post('/login')
             .send({email:'user6@gmail.com', password:'123456#Ab'})
             .expect(200)
 
