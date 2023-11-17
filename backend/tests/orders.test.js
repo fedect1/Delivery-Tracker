@@ -163,12 +163,57 @@ describe("checking Zod validation", () => {
             .expect(400)
             .expect("Content-Type", /application\/json/)
             .expect(response => {
-                expect(response.body.message).toBe('Validation failed: TrackerNumber is Required');
+                expect(response.body.message).toBe('Validation failed: TrackerNumber is required');
             })
-
     })
     
+    test("when the trackerNumber is not a string", async () => {
+        const tokenResponse = await api
+            .post("/login")
+            .send({
+                "email": "testuser@gmail.com",
+                "password": "123456#Ab"
+            })
 
+        const newOrder = {
+            "trackerNumber": 12345,
+            "costumerInfo": {
+                "name": "John Smith",
+                "phone": "123-456-7890",
+                "address": "123 Main St, Townsville, Nation",
+                "email": "john@gmail.com"
+            },
+            "orderDetails": {
+                "items": [
+                    {
+                        "itemName": "Apple",
+                        "quantity": 5,
+                        "pricePerItem": 0.6
+                    },
+                    {
+                        "itemName": "Orange",
+                        "quantity": 4,
+                        "pricePerItem": 1.0
+                    },
+                    {
+                        "itemName": "Banana",
+                        "quantity": 15,
+                        "pricePerItem": 0.4
+                    }
+                ],
+                "totalPrice": 10.5
+            }
+        }
+        await api
+            .post("/orders")
+            .set('Authorization', `Bearer ${tokenResponse.body.token}`)
+            .send(newOrder)
+            .expect(400)
+            .expect("Content-Type", /application\/json/)
+            .expect(response => {
+                expect(response.body.message).toBe('Validation failed: TrackerNumber is expected string, received number');
+            })
+    })
 
 })        
 

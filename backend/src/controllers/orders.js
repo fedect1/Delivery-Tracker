@@ -16,7 +16,7 @@ export class orderController{
             if (!validatedOrder.success) {
                 const errorTitle = validatedOrder.error.issues[0].path[0];
                 const errorMessages = validatedOrder.error.issues.map((issue) => issue.message );
-                const combinedErrorMessage = `Validation failed: ${(errorTitle).charAt(0).toUpperCase() + (errorTitle).slice(1)} is ${errorMessages.join(', ')}`;
+                const combinedErrorMessage = `Validation failed: ${(errorTitle).charAt(0).toUpperCase() + (errorTitle).slice(1)} is ${errorMessages.join(', ').toLowerCase()}`;
                 const error = new Error(combinedErrorMessage);
                 error.type = 'ZodError';
                 throw error;
