@@ -1,9 +1,10 @@
+import { Navbar } from "../"
 
 export const OrderPage = () => {
   return (
-    <div>
-      Order page
-    </div>
+    <>
+     <Navbar />
+    </>
   )
 }
 
