@@ -21,11 +21,7 @@ const orderSchema = zod.object({
 });
 
 const validateOrder = (order) => {
-    const validationResult = orderSchema.safeParse(order);
-    if (!validationResult.success) {
-        console.log(validationResult.error);
-    }
-    return validationResult.data;
+  return orderSchema.safeParse(order);
 }
 
 // VALIDATION SCHEMAS FOR PUT /orders/:trackerNumber
