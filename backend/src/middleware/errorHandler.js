@@ -2,11 +2,15 @@ export const errorHandler = (err, req, res, next) => {
     console.error(err.stack);
 
     if (err.type === 'ZodError') {
-        return res.status(400).json({ message: 'Validation failed', errors: err.errors });
+        return res.status(400).json({ message: err.message, errors: err.errors });
     }
 
-    if (err.code === 11000) {
-        return res.status(409).json({ message: 'Duplicate key error', details: err.message });
+
+
+    if (err.type === 'DuplicateError') {
+        const field = err.message.includes('username') ? 'username' : 'email';
+        const message = `User with this ${field} already exists`;
+        return res.status(409).json({ message });
     }
 
     if (err instanceof mongoose.Error.ValidationError) {

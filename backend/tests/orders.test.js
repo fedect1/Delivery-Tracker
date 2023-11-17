@@ -4,6 +4,7 @@ import OrderModel from '../src/models/mongodb/order.js';
 import UserModel from '../src/models/mongodb/User.js';
 import { app, server } from '../src/app.js';
 import { initialOrders, initialUsers } from './test_helper.js';
+import { response } from 'express';
 
 const api = supertest(app);
 
@@ -18,77 +19,203 @@ beforeEach(async () => {
     }
     for (const [index, order] of initialOrders.entries()) {
         if (userId[index]) {
-            order.userId = userId[index];
+            order.user = userId[index];
         }   
         const orderObject = new OrderModel(order);
         await orderObject.save();
     }
-})
-
-test("orders are returned as json", async () => {
     await api
-        .get("/orders")
-        .expect(200)
-        .expect("Content-Type", /application\/json/);
+        .post("/users")
+        .send({
+            "username": "testUser",
+            "email": "testuser@gmail.com",
+            "password": "123456#Ab"
+        })
 })
+describe("when the orders are posted", () => {
+    test("orders are returned as json", async () => {
+        await api
+            .post("/users")
+            .send({
+                "username": "user3",
+                "email": "user3@gmail.com",
+                "password": "123456#Ab"
+            })
+            .expect(201)
+            .expect("Content-Type", /application\/json/);
 
-test("there are two orders", async () => {
-    const response = await api.get("/orders");
-    expect(response.body).toHaveLength(initialOrders.length);
+            const tokenResponse = await api
+                .post("/login")
+                .send({
+                    "email": "user3@gmail.com",
+                    "password": "123456#Ab"
+                })
+                .expect(200)
+
+        await api
+            .get("/orders")
+            .set('Authorization', `Bearer ${tokenResponse.body.token}`)
+            .expect(200)
+            .expect("Content-Type", /application\/json/);
+    })
+
+    test("a valid order can be added", async () => {
+        await api
+            .post("/users")
+            .send({
+                "username": "user4",
+                "email": "user4@gmail.com",
+                "password": "123456#Ab"
+            })
+            .expect(201)
+            .expect("Content-Type", /application\/json/);
+        
+        const tokenResponse = await api
+            .post("/login")
+            .send({
+            "email": "user4@gmail.com",
+            "password": "123456#Ab"
+            })
+            .expect(200)
+
+        const newOrder = {
+            "trackerNumber": "ORD-12345ABO",
+            "costumerInfo": {
+                "name": "John Smith",
+                "phone": "123-456-7890",
+                "address": "123 Main St, Townsville, Nation",
+                "email": "raul@gmail.com"
+            },
+            "orderDetails": {
+                "items": [
+                    {
+                        "itemName": "Apple",
+                        "quantity": 5,
+                        "pricePerItem": 0.6
+                    },
+                    {
+                        "itemName": "Orange",
+                        "quantity": 4,
+                        "pricePerItem": 1.0
+                    },
+                    {
+                        "itemName": "Banana",
+                        "quantity": 15,
+                        "pricePerItem": 0.4
+                    }
+                ],
+                "totalPrice": 10.5
+            },
+        }
+        await api
+            .post("/orders")
+            .set('Authorization', `Bearer ${tokenResponse.body.token}`)
+            .send(newOrder)
+            .expect(201)
+            .expect("Content-Type", /application\/json/);
+
+
+    })
 })
+describe("checking Zod validation", () => {
+    
+    test("when the trackerNumber is missing", async () => {
+        const tokenResponse = await api
+            .post("/login")
+            .send({
+                "email": "testuser@gmail.com",
+                "password": "123456#Ab"
+            })
 
-test("the first order is John Smith's", async () => {
-    const response = await api.get("/orders");
-    const contents = response.body.map(order => order.costumerInfo.name);
-    expect(contents).toContain("John Smith");
-})
-
-test("a valid order can be added", async () => {
-    const user = await UserModel.findOne({username: "fede"});
-    const newOrder = {
-        "userId": user._id,
-        "trackerNumber": "ORD-12345ABO",
-        "costumerInfo": {
-            "name": "John Smith",
-            "phone": "123-456-7890",
-            "address": "123 Main St, Townsville, Nation",
-            "email": "raul@gmail.com"
-        },
-        "orderDetails": {
-            "items": [
-                {
-                    "itemName": "Apple",
-                    "quantity": 5,
-                    "pricePerItem": 0.6
-                },
-                {
-                    "itemName": "Orange",
-                    "quantity": 4,
-                    "pricePerItem": 1.0
-                },
-                {
-                    "itemName": "Banana",
-                    "quantity": 15,
-                    "pricePerItem": 0.4
-                }
-            ],
-            "totalPrice": 10.5
-        },
-        "status": "preparing",
-        "statusUpdates": [
-            {
-                "timestamp": "2023-10-23T11:10:00Z",
-                "update": "Order has been confirmed and is currently being prepared."
+        const newOrder = {
+            "costumerInfo": {
+                "name": "John Smith",
+                "phone": "123-456-7890",
+                "address": "123 Main St, Townsville, Nation",
+                "email": "john@gmail.com"
+            },
+            "orderDetails": {
+                "items": [
+                    {
+                        "itemName": "Apple",
+                        "quantity": 5,
+                        "pricePerItem": 0.6
+                    },
+                    {
+                        "itemName": "Orange",
+                        "quantity": 4,
+                        "pricePerItem": 1.0
+                    },
+                    {
+                        "itemName": "Banana",
+                        "quantity": 15,
+                        "pricePerItem": 0.4
+                    }
+                ],
+                "totalPrice": 10.5
             }
-        ]
-    }
-    await api.post("/orders").send(newOrder).expect(201).expect("Content-Type", /application\/json/);
-    const response = await api.get("/orders");
-    const contents = response.body.map(order => order.costumerInfo.name);
-    expect(response.body).toHaveLength(initialOrders.length + 1);
-    expect(contents).toContain("John Smith");
-})
+        }
 
+        await api
+            .post("/orders")
+            .set('Authorization', `Bearer ${tokenResponse.body.token}`)
+            .send(newOrder)
+            .expect(400)
+            .expect("Content-Type", /application\/json/)
+            .expect(response => {
+                expect(response.body.message).toBe('Validation failed: TrackerNumber is required');
+            })
+    })
+    
+    test("when the trackerNumber is not a string", async () => {
+        const tokenResponse = await api
+            .post("/login")
+            .send({
+                "email": "testuser@gmail.com",
+                "password": "123456#Ab"
+            })
+
+        const newOrder = {
+            "trackerNumber": 12345,
+            "costumerInfo": {
+                "name": "John Smith",
+                "phone": "123-456-7890",
+                "address": "123 Main St, Townsville, Nation",
+                "email": "john@gmail.com"
+            },
+            "orderDetails": {
+                "items": [
+                    {
+                        "itemName": "Apple",
+                        "quantity": 5,
+                        "pricePerItem": 0.6
+                    },
+                    {
+                        "itemName": "Orange",
+                        "quantity": 4,
+                        "pricePerItem": 1.0
+                    },
+                    {
+                        "itemName": "Banana",
+                        "quantity": 15,
+                        "pricePerItem": 0.4
+                    }
+                ],
+                "totalPrice": 10.5
+            }
+        }
+        await api
+            .post("/orders")
+            .set('Authorization', `Bearer ${tokenResponse.body.token}`)
+            .send(newOrder)
+            .expect(400)
+            .expect("Content-Type", /application\/json/)
+            .expect(response => {
+                expect(response.body.message).toBe('Validation failed: TrackerNumber is expected string, received number');
+            })
+    })
+
+})        
 
 afterAll(() => {
     mongoose.connection.close();

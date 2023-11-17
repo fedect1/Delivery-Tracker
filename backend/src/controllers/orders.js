@@ -12,9 +12,17 @@ export class orderController{
     }
     static async create(req, res, next){
         try{
-            const validatedOrder = validateOrder(req.body);
+            const validatedOrder = validateOrder(req.body)
+            if (!validatedOrder.success) {
+                const errorTitle = validatedOrder.error.issues[0].path[0];
+                const errorMessages = validatedOrder.error.issues.map((issue) => issue.message );
+                const combinedErrorMessage = `Validation failed: ${(errorTitle).charAt(0).toUpperCase() + (errorTitle).slice(1)} is ${errorMessages.join(', ').toLowerCase()}`;
+                const error = new Error(combinedErrorMessage);
+                error.type = 'ZodError';
+                throw error;
+            }
             const userId = req.userId;
-            const order = await OrderModel.createOrder({input: validatedOrder, userId});
+            const order = await OrderModel.createOrder({input: validatedOrder.data, userId});
             res.status(201).json(order);
         } catch (err) {
             next(err)
