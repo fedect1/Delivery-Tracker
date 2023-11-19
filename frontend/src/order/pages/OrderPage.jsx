@@ -1,4 +1,4 @@
-import { Navbar, OrdersList } from "../"
+import { ModalNewOrder, Navbar, OrdersList } from "../"
 import ordersData from "../../orders.json"
 
 export const OrderPage = () => {
@@ -6,6 +6,7 @@ export const OrderPage = () => {
     <>
      <Navbar />
      <OrdersList orders = {[ordersData]} />
+     <ModalNewOrder />
     </>
   )
 }
