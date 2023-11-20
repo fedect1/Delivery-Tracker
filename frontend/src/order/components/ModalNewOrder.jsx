@@ -24,8 +24,39 @@ export const ModalNewOrder = () => {
 
   return (
     <Modal isOpen={ modalIsOpen } onRequestClose={ onCloseModal } style={ customStyles } className="modal" overlayClassName="modal-fondo" closeTimeoutMS={ 200 }>
-        <h1>New order</h1>
-        <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Animi vero odit labore minima nobis praesentium ex illum officiis. Excepturi dignissimos asperiores repellat rem consequuntur in sapiente corrupti, aut accusantium minima!</p>
+      <h1> New Order </h1>
+      <hr />
+      <form className="container">
+          <div className="form-group mb-2">
+              <label>Costumer info</label>
+              <input className="form-control" placeholder="Fullname" />
+              <input className="form-control mt-2" placeholder="Address" />
+              <input className="form-control mt-2" placeholder="Phone" />
+              <input className="form-control mt-2" placeholder="Email" />
+          </div>
+
+          <div className="form-group mb-2">
+              <label>Order Details</label>
+              <input className="form-control" placeholder="Item name" />
+              <input className="form-control mt-2" placeholder="Price per item" />
+              <input className="form-control mt-2" placeholder="Quantity" />
+          </div>
+
+          <hr />
+          <div className="form-group mb-3">
+              <label>Track number</label>
+              <input className="form-control" placeholder="Track number" />
+          </div>
+
+          <button
+              type="submit"
+              className="btn btn-outline-primary btn-block"
+          >
+              <i className="far fa-save"></i>
+              <span> Save</span>
+          </button>
+
+      </form>
     </Modal>
   )
 }
