@@ -2,6 +2,7 @@ import Modal from 'react-modal'
 import { useState } from 'react'
 import Swal from 'sweetalert2'
 import 'sweetalert2/dist/sweetalert2.min.css'
+import { useUiStore } from '../../hooks/useUiStore';
 
 const customStyles = {
     content: {
@@ -17,8 +18,7 @@ const customStyles = {
 Modal.setAppElement('#root');
 
 export const ModalNewOrder = () => {
-    const [modalIsOpen, setIsOpen] = useState(true);
-
+    const { isNewOrderModalOpen, closeModalUi } = useUiStore();
     const [formValues, setFormValues] = useState({
         fullname: '',
         address: '',
@@ -38,8 +38,7 @@ export const ModalNewOrder = () => {
     }
 
     const onCloseModal = () => {
-        console.log('onCloseModal')
-        setIsOpen(false);
+        closeModalUi();
     }
 
     const onSubmit = (e) => {
@@ -52,7 +51,7 @@ export const ModalNewOrder = () => {
     }
 
   return (
-    <Modal isOpen={ modalIsOpen } onRequestClose={ onCloseModal } style={ customStyles } className="modal" overlayClassName="modal-fondo" closeTimeoutMS={ 200 }>
+    <Modal isOpen={ isNewOrderModalOpen } onRequestClose={ onCloseModal } style={ customStyles } className="modal" overlayClassName="modal-fondo" closeTimeoutMS={ 200 }>
       <h1> New Order </h1>
       <hr />
       <form className="container" onSubmit={ onSubmit }>
