@@ -38,3 +38,15 @@
     outline: none;
     padding: 10px;
 }
+
+.fab {
+    background-color: #007bff;
+    border-radius: 50%;
+    color: white;
+    cursor: pointer;
+    height: 50px;
+    position: fixed;
+    right: 20px;
+    width: 50px;
+    z-index: 1000;
+}

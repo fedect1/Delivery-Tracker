@@ -1,6 +1,16 @@
+import { useOrderStore } from "../../hooks/useOrderStore";
+
 export const OrderCard = ({ orderData }) => {
+    const { selectedOrderId, onCardClick } = useOrderStore();
+    const onDoubleClick = () => {
+        console.log('onDoubleClick')
+    }
+
+
+
+    const isSelected = orderData._id === selectedOrderId ? 'border-info' : 'border-secondary'
     return (
-        <div className="card">
+        <div className={`card mt-2 ${isSelected}`} onClick={() => onCardClick(orderData._id)}>
             <div className="card-header">
                 Tracker Number: {orderData.trackerNumber}
             </div>
@@ -21,6 +31,10 @@ export const OrderCard = ({ orderData }) => {
                 </ul>
                 <p className="card-text">Total Price: ${orderData.orderDetails.totalPrice}</p>
             </div>
+        <button className="btn btn-secondary mb-4">
+            <i className="fas fa-edit"></i>
+            <span> Change Status </span>
+        </button>
         </div>
     );
 };
