@@ -1,10 +1,8 @@
 import { useOrderStore } from "../../hooks/useOrderStore";
 
 export const OrderCard = ({ orderData }) => {
-    const { selectedOrderId, onCardClick } = useOrderStore();
-    const onDoubleClick = () => {
-        console.log('onDoubleClick')
-    }
+    const { selectedOrderId, onCardClick, onOrderChangeStatus } = useOrderStore();
+
 
 
 
@@ -15,6 +13,8 @@ export const OrderCard = ({ orderData }) => {
                 Tracker Number: {orderData.trackerNumber}
             </div>
             <div className="card-body">
+                <h5 className="card-title">Order Status</h5>
+                <p className="card-text">Status: {orderData.status}</p>
                 <h5 className="card-title">Customer Info</h5>
                 <p className="card-text">Name: {orderData.costumerInfo.name}</p>
                 <p className="card-text">Phone: {orderData.costumerInfo.phone}</p>
@@ -31,7 +31,7 @@ export const OrderCard = ({ orderData }) => {
                 </ul>
                 <p className="card-text">Total Price: ${orderData.orderDetails.totalPrice}</p>
             </div>
-        <button className="btn btn-secondary mb-4">
+        <button className="btn btn-secondary mb-4" onClick={()=>onOrderChangeStatus(orderData._id)}>
             <i className="fas fa-edit"></i>
             <span> Change Status </span>
         </button>

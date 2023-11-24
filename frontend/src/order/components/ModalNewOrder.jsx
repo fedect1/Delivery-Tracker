@@ -1,8 +1,9 @@
 import Modal from 'react-modal'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Swal from 'sweetalert2'
 import 'sweetalert2/dist/sweetalert2.min.css'
 import { useUiStore } from '../../hooks/useUiStore';
+import { useOrderStore } from '../../hooks/useOrderStore';
 
 const customStyles = {
     content: {
@@ -19,6 +20,7 @@ Modal.setAppElement('#root');
 
 export const ModalNewOrder = () => {
     const { isNewOrderModalOpen, closeModalUi } = useUiStore();
+    const { isActiveOrder } = useOrderStore();
     const [formValues, setFormValues] = useState({
         fullname: '',
         address: '',
@@ -29,6 +31,21 @@ export const ModalNewOrder = () => {
         quantity: '',
         tracknumber: '',
     });
+
+    useEffect(() => {
+        if (isActiveOrder !== null) {
+            setFormValues({
+                fullname: isActiveOrder.costumerInfo.name,
+                address: isActiveOrder.costumerInfo.address,
+                phone: isActiveOrder.costumerInfo.phone,
+                email: isActiveOrder.costumerInfo.email,
+                itemname: isActiveOrder.orderDetails.items[0].itemName,
+                price: isActiveOrder.orderDetails.totalPrice,
+                quantity: isActiveOrder.orderDetails.items[0].quantity,
+                tracknumber: isActiveOrder.trackerNumber,
+            });
+        }
+    }, [isActiveOrder]);
 
     const onInputChange = ({ target }) => {
         setFormValues({
