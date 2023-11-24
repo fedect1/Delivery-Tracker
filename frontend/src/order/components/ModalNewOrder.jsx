@@ -20,7 +20,7 @@ Modal.setAppElement('#root');
 
 export const ModalNewOrder = () => {
     const { isNewOrderModalOpen, closeModalUi } = useUiStore();
-    const { isActiveOrder } = useOrderStore();
+    const { isActiveOrder, startSavingOrder } = useOrderStore();
     const [formValues, setFormValues] = useState({
         fullname: '',
         address: '',
@@ -44,6 +44,17 @@ export const ModalNewOrder = () => {
                 quantity: isActiveOrder.orderDetails.items[0].quantity,
                 tracknumber: isActiveOrder.trackerNumber,
             });
+        } else {
+            setFormValues({
+                fullname: '',
+                address: '',
+                phone: '',
+                email: '',
+                itemname: '',
+                price: '',
+                quantity: '',
+                tracknumber: '',
+            });
         }
     }, [isActiveOrder]);
 
@@ -58,12 +69,38 @@ export const ModalNewOrder = () => {
         closeModalUi();
     }
 
-    const onSubmit = (e) => {
+    const onSubmit = async (e) => {
         e.preventDefault();
-        console.log('onSubmit')
+        console.log(formValues)
         if (formValues.fullname === '' || formValues.address === '' || formValues.phone === '' || formValues.email === '' || formValues.itemname === '' || formValues.price === '' || formValues.quantity === '' || formValues.tracknumber === '') {
             Swal.fire('Error', 'All fields are required', 'error');
             return;
+        }
+        const newOrderData = {
+            trackerNumber: formValues.tracknumber,
+            costumerInfo: {
+                name: formValues.fullname,
+                phone: formValues.phone,
+                address: formValues.address,
+                email: formValues.email,
+            },
+            orderDetails: {
+                items: [
+                    {
+                        itemName: formValues.itemname,
+                        quantity: parseInt(formValues.quantity), 
+                        pricePerItem: parseFloat(formValues.price) 
+                    },
+
+                ],
+                totalPrice: parseFloat(formValues.price) * parseInt(formValues.quantity), 
+            }
+        };
+        if (isActiveOrder === null) {
+            await startSavingOrder(newOrderData);
+            closeModalUi();
+        } else {
+            // startUpdatingOrder(formValues);
         }
     }
 

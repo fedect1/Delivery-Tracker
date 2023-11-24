@@ -39,16 +39,20 @@ export const orderSlice = createSlice({
         selectedOrderId: null,
     },
     reducers: {
-        addToOrder: (state, { payload }) => {
+        addNewOrder: (state, { payload }) => {
             state.listOrders.push(payload);
+            state.isActiveOrder = null;
         },
         selectOrder: (state, { payload }) => {
             state.selectedOrderId = payload;
         },
         setActiveOrderModal: (state, { payload }) => {
             state.isActiveOrder = state.listOrders.find(order => order._id === payload);
+        },
+        setActiveOrderModalToNull: (state) => {
+            state.isActiveOrder = null;
         }
     },
 });
 
-export const { addToOrder, selectOrder, setActiveOrderModal } = orderSlice.actions;
+export const { addNewOrder, selectOrder, setActiveOrderModal, setActiveOrderModalToNull } = orderSlice.actions;
