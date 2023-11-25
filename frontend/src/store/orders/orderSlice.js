@@ -28,7 +28,8 @@ const newOrder = {
             }
         ],
         "totalPrice": 10.5
-    }
+    },
+    "status": "pending",
 }
 
 export const orderSlice = createSlice({
@@ -51,8 +52,16 @@ export const orderSlice = createSlice({
         },
         setActiveOrderModalToNull: (state) => {
             state.isActiveOrder = null;
+        },
+        updateStatus: (state, { payload }) => {
+            state.listOrders.map(order => {
+                if (order._id === payload._id) {
+                    return {...order, status: payload.status}
+                }
+                return order;
+            })
         }
     },
 });
 
-export const { addNewOrder, selectOrder, setActiveOrderModal, setActiveOrderModalToNull } = orderSlice.actions;
+export const { addNewOrder, selectOrder, setActiveOrderModal, setActiveOrderModalToNull, updateStatus } = orderSlice.actions;

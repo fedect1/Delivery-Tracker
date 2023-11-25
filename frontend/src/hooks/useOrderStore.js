@@ -1,5 +1,5 @@
 import { useSelector, useDispatch } from 'react-redux' 
-import { addNewOrder, selectOrder, setActiveOrderModal, setActiveOrderModalToNull } from '../store/orders/orderSlice';
+import { addNewOrder, selectOrder, setActiveOrderModal, setActiveOrderModalToNull, updateStatus } from '../store/orders/orderSlice';
 import { openModal } from '../store/ui/uiSlice';
 
 export const useOrderStore = () => {
@@ -28,6 +28,10 @@ export const useOrderStore = () => {
         dispatch(addNewOrder({ ...newOrder, _id: "12345" }));
       }
     }
+    
+    const startUpdatingOrderStatus = async ({ _id, status }) => {
+      dispatch(updateStatus({  _id, status }));
+    }
 
 
   return {
@@ -39,6 +43,8 @@ export const useOrderStore = () => {
     onOrderChangeStatus,
     setEmptyFieldsForModal,
     startSavingOrder,
+    startUpdatingOrderStatus,
+    
   }
 }
 

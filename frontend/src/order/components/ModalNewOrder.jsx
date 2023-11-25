@@ -20,7 +20,7 @@ Modal.setAppElement('#root');
 
 export const ModalNewOrder = () => {
     const { isNewOrderModalOpen, closeModalUi } = useUiStore();
-    const { isActiveOrder, startSavingOrder } = useOrderStore();
+    const { isActiveOrder, startSavingOrder, startUpdatingOrderStatus } = useOrderStore();
     const [formValues, setFormValues] = useState({
         fullname: '',
         address: '',
@@ -43,6 +43,7 @@ export const ModalNewOrder = () => {
                 price: isActiveOrder.orderDetails.totalPrice,
                 quantity: isActiveOrder.orderDetails.items[0].quantity,
                 tracknumber: isActiveOrder.trackerNumber,
+                status: isActiveOrder.status,
             });
         } else {
             setFormValues({
@@ -54,6 +55,7 @@ export const ModalNewOrder = () => {
                 price: '',
                 quantity: '',
                 tracknumber: '',
+                status: '',
             });
         }
     }, [isActiveOrder]);
@@ -94,13 +96,15 @@ export const ModalNewOrder = () => {
 
                 ],
                 totalPrice: parseFloat(formValues.price) * parseInt(formValues.quantity), 
-            }
+            },
+            status: formValues.status,
         };
         if (isActiveOrder === null) {
             await startSavingOrder(newOrderData);
             closeModalUi();
         } else {
-            // startUpdatingOrder(formValues);
+            await startUpdatingOrderStatus({_id: isActiveOrder._id, status: formValues.status});
+            closeModalUi();
         }
     }
 
@@ -129,7 +133,14 @@ export const ModalNewOrder = () => {
               <label>Track number</label>
               <input className="form-control" placeholder="Track number" name='tracknumber' value={formValues.tracknumber} onChange={onInputChange}/>
           </div>
-
+          <div className="form-group mb-3">
+                <label>Status</label>
+                <select className="form-control" name='status' value={formValues.status} onChange={onInputChange}>
+                    <option value="pending">Pending</option>
+                    <option value="in transit">In transit</option>
+                    <option value="delivered">Delivered</option>
+                </select>
+            </div>
           <button
               type="submit"
               className="btn btn-outline-primary btn-block"
