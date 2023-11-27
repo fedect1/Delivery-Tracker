@@ -5,7 +5,7 @@
   "main": "src/app.js",
   "type": "module",
   "scripts": {
-    "dev": "cross-env NODE_ENV=development nodemon app.js",
+    "dev": "cross-env NODE_ENV=development PORT=4000 nodemon app.js",
     "start": "cross-env NODE_ENV=production node app.js",
     "test": "cross-env NODE_ENV=test PORT=3002 jest --verbose ./tests/orders.test.js",
     "test:watch": "npm run test -- --watch"
