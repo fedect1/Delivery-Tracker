@@ -9,10 +9,10 @@ const { MONGODB_URI_DEV, MONGODB_URI_TEST, MONGODB_URI_PROD, NODE_ENV } = proces
 const connectString = () => {
     if (NODE_ENV === "test") {
         return MONGODB_URI_TEST;
-    } else if (NODE_ENV === "development") {
-        return MONGODB_URI_DEV;
-    } else {
+    } else if (NODE_ENV === "production") {
         return MONGODB_URI_PROD;
+    } else {
+        return MONGODB_URI_DEV;
     }
 }
 
@@ -27,7 +27,7 @@ export const connectToMongoDB = () => {
                 deprecationErrors: true,
             }
         })
-        .then(() => console.log("Connected to MongoDB"))
+        .then(() => console.log(`Connected to MongoDB in ${NODE_ENV} environment`))
         .catch((err) => console.log(err));
 }
 

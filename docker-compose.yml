@@ -1,0 +1,18 @@
+services:
+  backend:
+    image: delivery-tracker-api
+    build:
+      context: backend
+      dockerfile: Dockerfile
+    ports:
+      - '4000:4000'
+    env_file:
+      - ./backend/.env
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ./backend/src:/app/src
+
+      
+
+
