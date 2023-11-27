@@ -3,7 +3,7 @@ import { LoginPage } from '../auth'
 import { OrderPage } from '../order'
 
 export const AppRouter = () => {
-  const authStatus = 'authenticated'
+  const authStatus = 'not-authenticated'
 
   return (
     <Routes>
