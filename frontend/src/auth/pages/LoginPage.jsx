@@ -1,3 +1,4 @@
+import { useAuthStore } from '../../hooks/useAuthStore';
 import { useForm } from '../../hooks/useForm';
 import './LoginPage.css';
 
@@ -19,9 +20,11 @@ export const LoginPage = () => {
     const { loginEmail, loginPassword, onInputChange:onLoginInputChange } = useForm(loginFormFields);
     const { singupUsername, singupEmail, singupPassword, singupConfirmPassword, onInputChange:onSignupInputChange } = useForm(signupFormFields);
 
+    const { startLogin } = useAuthStore()
+
     const loginFormSubmit = (e) => {
         e.preventDefault();
-        console.log({loginEmail, loginPassword});
+        startLogin({email: loginEmail, password: loginPassword});
     }
 
     const signupFormSubmit = (e) => {
