@@ -18,18 +18,18 @@ export const authSlice = createSlice({
             state.user = {};
             state.errorMessage = payload
         },
-        onChecking: (state, action) => {
+        onChecking: (state) => {
             state.status = 'checking';
             state.user = {},
             state.errorMessage = undefined
         },
-        error: (state, action) => {
+        error: (state, { payload }) => {
             state.status = 'error';
-            state.errorMessage = action.payload;
+            state.errorMessage = payload
         },
-        clearErroMessage: (state, action) => {
+        clearErroMessage: (state) => {
             state.errorMessage = undefined;
-        }
+        },
     }
 });
 

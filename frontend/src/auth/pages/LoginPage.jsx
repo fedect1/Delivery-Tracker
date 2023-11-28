@@ -22,7 +22,7 @@ export const LoginPage = () => {
     const { loginEmail, loginPassword, onInputChange:onLoginInputChange } = useForm(loginFormFields);
     const { singupUsername, singupEmail, singupPassword, singupConfirmPassword, onInputChange:onSignupInputChange } = useForm(signupFormFields);
 
-    const { startLogin, errorMessage } = useAuthStore()
+    const { startLogin, startSignUp, errorMessage } = useAuthStore()
 
     useEffect(() => {
         if (errorMessage!==undefined) {
@@ -41,7 +41,15 @@ export const LoginPage = () => {
 
     const signupFormSubmit = (e) => {
         e.preventDefault();
-        console.log({singupUsername, singupEmail, singupPassword, singupConfirmPassword});
+        if (singupPassword!==singupConfirmPassword) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Passwords do not match!',
+            })
+            return;
+        }
+        startSignUp({username: singupUsername, email: singupEmail, password: singupPassword});
     }
 
     return (
