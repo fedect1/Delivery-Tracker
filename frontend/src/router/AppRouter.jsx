@@ -14,13 +14,25 @@ export const AppRouter = () => {
   if (status === 'checking') {
     return <div>Loading...</div>
   }
-  console.log(status)
+
 
   return (
     <Routes>
-      {(status === 'non-authenticated') ? <Route path="/auth/*" element={<LoginPage />} /> : <Route path="/*" element={<OrderPage/>} />}
+      {(status === 'non-authenticated') ? ( 
+        <>
+          <Route path="/auth/*" element={<LoginPage />} />
+          <Route path="/*" element={<Navigate to="auth/login"/>} />
+        </>
+        )
+        : (
+         <>
+          <Route path="/" element={<OrderPage/>} />
+          <Route path="/*" element={<Navigate to="/"/>} />
+         </>
+          
+          )
+        }
 
-      <Route path="/*" element={<Navigate to="auth/login"/>} />
       
       
     </Routes>
