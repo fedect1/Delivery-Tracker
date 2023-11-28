@@ -1,41 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-const newOrder = {
-    "_id": "12345",
-    "trackerNumber": "ORD-12345ABO",
-    "costumerInfo": {
-        "name": "John Smith",
-        "phone": "123-456-7890",
-        "address": "123 Main St, Townsville, Nation",
-        "email": "raul@gmail.com"
-    },
-    "orderDetails": {
-        "items": [
-            {
-                "itemName": "Apple",
-                "quantity": 5,
-                "pricePerItem": 0.6
-            },
-            {
-                "itemName": "Orange",
-                "quantity": 4,
-                "pricePerItem": 1.0
-            },
-            {
-                "itemName": "Banana",
-                "quantity": 15,
-                "pricePerItem": 0.4
-            }
-        ],
-        "totalPrice": 10.5
-    },
-    "status": "pending",
-}
+
 
 export const orderSlice = createSlice({
     name: 'order',
     initialState: {
-        listOrders: [newOrder],
+        isLoading: true,
+        listOrders: [],
         isActiveOrder: null,
         selectedOrderId: null,
     },
@@ -60,8 +31,18 @@ export const orderSlice = createSlice({
                 }
                 return order;
             })
+        },
+        onLoadOrders: (state, { payload = [] }) => {
+
+            payload.forEach(order => {
+                const existingOrder = state.listOrders.some(dbOrder => dbOrder._id === order._id);
+                if (!existingOrder) {
+                    state.listOrders.push(order);
+                }
+            });
+            state.isLoading = false;
         }
     },
 });
 
-export const { addNewOrder, selectOrder, setActiveOrderModal, setActiveOrderModalToNull, updateStatus } = orderSlice.actions;
+export const { addNewOrder, selectOrder, setActiveOrderModal, setActiveOrderModalToNull, updateStatus, onLoadOrders } = orderSlice.actions;
