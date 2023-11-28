@@ -38,12 +38,12 @@ export const useAuthStore = () => {
     const checkAuthToken = async () => {
         const token = localStorage.getItem( 'token' );
         if ( !token ) {
-            dispatch( onLogout( 'Token not found' ) );
+            dispatch( onLogout() );
             return false;
         }
         const tokenInitDate = localStorage.getItem( 'token-init-date' );
         const now = new Date().getTime();
-        if ( now - tokenInitDate > 60 * 60 * 1000 ) {
+        if ( now - tokenInitDate > 60 * 60 * 24) {
             dispatch( onLogout( 'Token expired' ) );
             return false;
         }
@@ -52,10 +52,10 @@ export const useAuthStore = () => {
             localStorage.setItem( 'token', data.token );
             localStorage.setItem( 'token-init-date', new Date().getTime() );
             dispatch( onLogin( {name: data.username} ) );
-            return true;
+
         } catch (error) {
             dispatch( onLogout( error.response.data.message ) );
-            return false;
+
         }
     }
 
