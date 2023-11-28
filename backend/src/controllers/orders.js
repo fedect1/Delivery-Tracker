@@ -31,10 +31,10 @@ export class orderController{
 
     static async updateStatus(req, res, next){
         try{
-            const { trackerNumber } = req.params;
+            const { orderId } = req.params;
             const validatedInput = validateStatusUpdate(req.body);
             const userId = req.userId;
-            const order = await OrderModel.updateStatus({trackerNumber, input: validatedInput, userId});
+            const order = await OrderModel.updateStatus({orderId, input: validatedInput, userId});
             if (!order) {
                 return res.status(404).json({ message: "Order not found" });
             }

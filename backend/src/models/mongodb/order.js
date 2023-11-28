@@ -121,9 +121,9 @@ class Order {
             throw err;
         } 
     }
-    static async updateStatus({trackerNumber, input, userId}) {
+    static async updateStatus({orderId, input, userId}) {
         try {
-            const order = await this.findOne({ trackerNumber });
+            const order = await this.findById(orderId);
             if (!order) {
                 throw new Error("Order not found");
             }

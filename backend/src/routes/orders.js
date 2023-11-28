@@ -17,7 +17,7 @@ ordersRouter.get("/", orderController.findAll);
 ordersRouter.post("/", orderController.create);
 
 // PATCH /orders/:id/status
-ordersRouter.patch("/:trackerNumber/status", orderController.updateStatus);
+ordersRouter.patch("/:orderId/status", orderController.updateStatus);
 
 // DELETE /orders/:id
 ordersRouter.delete("/:id", orderController.deleteOrder);

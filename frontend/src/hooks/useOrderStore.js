@@ -24,6 +24,7 @@ export const useOrderStore = () => {
     const startSavingOrder = async ( newOrder ) => {
       //TODO: Add backend call to save order
       if (newOrder._id) {
+        const { data } = await deliveryTrackerApi.put(`/orders/${newOrder._id}`, newOrder);
         console.log("Updating order");
       } else {
         const { data } = await deliveryTrackerApi.post('/orders', newOrder);
