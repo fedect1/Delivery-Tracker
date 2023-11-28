@@ -35,11 +35,36 @@ export const useAuthStore = () => {
         }
     }
 
+    const checkAuthToken = async () => {
+        const token = localStorage.getItem( 'token' );
+        if ( !token ) {
+            dispatch( onLogout( 'Token not found' ) );
+            return false;
+        }
+        const tokenInitDate = localStorage.getItem( 'token-init-date' );
+        const now = new Date().getTime();
+        if ( now - tokenInitDate > 60 * 60 * 1000 ) {
+            dispatch( onLogout( 'Token expired' ) );
+            return false;
+        }
+        try {
+            const { data } = await deliveryTrackerApi.get( '/login/renew' );
+            localStorage.setItem( 'token', data.token );
+            localStorage.setItem( 'token-init-date', new Date().getTime() );
+            dispatch( onLogin( {name: data.username} ) );
+            return true;
+        } catch (error) {
+            dispatch( onLogout( error.response.data.message ) );
+            return false;
+        }
+    }
+
     return {
         status,
         user,
         errorMessage,
         startLogin,
-        startSignUp
+        startSignUp,
+        checkAuthToken
     }
 }

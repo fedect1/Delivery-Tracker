@@ -16,12 +16,24 @@ export class loginController{
                 id: user._id
             };
 
-            const token = jwt.sign(userForToken, process.env.SECRET_KEY, { expiresIn: 60 * 60 * 24 * 7 });
+            const token = jwt.sign(userForToken, process.env.SECRET_KEY, { expiresIn: 60 * 60 * 24 });
 
             res.status(200).json({ token, username: user.username });
         } catch(error){
             next(error);
         }
+    }
+
+    static async renew(req, res, next){
+        const userId = req.userId;
+        const username = req.username;
+        const userForToken = {
+            username,
+            id: userId
+        };
+        const token = jwt.sign(userForToken, process.env.SECRET_KEY, { expiresIn: 60 * 60 * 24 });
+
+        res.status(200).json({ token, username });
     }
 }
             
