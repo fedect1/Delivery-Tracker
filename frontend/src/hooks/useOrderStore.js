@@ -1,6 +1,7 @@
 import { useSelector, useDispatch } from 'react-redux' 
 import { addNewOrder, selectOrder, setActiveOrderModal, setActiveOrderModalToNull, updateStatus } from '../store/orders/orderSlice';
 import { openModal } from '../store/ui/uiSlice';
+import deliveryTrackerApi from '../api/deliveryTracker';
 
 export const useOrderStore = () => {
     const dispatch = useDispatch();
@@ -25,7 +26,9 @@ export const useOrderStore = () => {
       if (newOrder._id) {
         console.log("Updating order");
       } else {
-        dispatch(addNewOrder({ ...newOrder, _id: "12345" }));
+        const { data } = await deliveryTrackerApi.post('/orders', newOrder);
+        console.log({data});
+        dispatch(addNewOrder(data));
       }
     }
     
