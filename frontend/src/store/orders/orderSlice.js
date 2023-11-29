@@ -31,6 +31,7 @@ export const orderSlice = createSlice({
                 }
                 return order;
             })
+            state.isActiveOrder = null;
         },
         onLoadOrders: (state, { payload = [] }) => {
 

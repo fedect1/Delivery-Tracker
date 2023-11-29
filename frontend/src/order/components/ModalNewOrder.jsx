@@ -27,7 +27,7 @@ export const ModalNewOrder = () => {
         phone: '',
         email: '',
         itemname: '',
-        price: '',
+        pricePerItem: '',
         quantity: '',
         tracknumber: '',
     });
@@ -40,7 +40,7 @@ export const ModalNewOrder = () => {
                 phone: isActiveOrder.costumerInfo.phone,
                 email: isActiveOrder.costumerInfo.email,
                 itemname: isActiveOrder.orderDetails.items[0].itemName,
-                price: isActiveOrder.orderDetails.totalPrice,
+                pricePerItem: isActiveOrder.orderDetails.items[0].pricePerItem,
                 quantity: isActiveOrder.orderDetails.items[0].quantity,
                 tracknumber: isActiveOrder.trackerNumber,
                 status: isActiveOrder.status,
@@ -52,7 +52,7 @@ export const ModalNewOrder = () => {
                 phone: '',
                 email: '',
                 itemname: '',
-                price: '',
+                pricePerItem: '',
                 quantity: '',
                 tracknumber: '',
                 status: '',
@@ -91,7 +91,7 @@ export const ModalNewOrder = () => {
                     {
                         itemName: formValues.itemname,
                         quantity: parseInt(formValues.quantity), 
-                        pricePerItem: parseFloat(formValues.price) 
+                        pricePerItem: parseFloat(formValues.pricePerItem) 
                     },
 
                 ],
@@ -124,7 +124,7 @@ export const ModalNewOrder = () => {
           <div className="form-group mb-2">
               <label>Order Details</label>
               <input className="form-control" placeholder="Item name" name='itemname' value={formValues.itemname} onChange={onInputChange}/>
-              <input className="form-control mt-2" placeholder="Price per item" name='price' value={formValues.price} onChange={onInputChange}/>
+              <input className="form-control mt-2" placeholder="Price per item" name='pricePerItem' value={formValues.pricePerItem} onChange={onInputChange}/>
               <input className="form-control mt-2" placeholder="Quantity" name='quantity' value={formValues.quantity} onChange={onInputChange}/>
           </div>
 

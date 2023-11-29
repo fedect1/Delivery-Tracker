@@ -23,6 +23,7 @@ export const useOrderStore = () => {
 
     const startSavingOrder = async ( newOrder ) => {
       try {
+        console.log( newOrder )
         const { data } = await deliveryTrackerApi.post('/orders', newOrder);
         dispatch(addNewOrder(data));
       } catch (error) {

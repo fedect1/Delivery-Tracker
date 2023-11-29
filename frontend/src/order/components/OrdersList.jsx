@@ -6,14 +6,19 @@ import { useEffect } from "react";
 
 export const OrdersList = () => {
     const { openModalUi } = useUiStore();
-    const { listOrders, startLoadingOrders } = useOrderStore();
+    const { listOrders, startLoadingOrders, setEmptyFieldsForModal } = useOrderStore();
+    const onNewOrder = () => {
+        setEmptyFieldsForModal();
+        openModalUi();
+    }
 
     useEffect(() => {
         startLoadingOrders();
     }, []);
+
     return (
         <div>
-            <button className="btn btn-primary" onClick={openModalUi}>
+            <button className="btn btn-primary" onClick={()=>onNewOrder()}>
                 <i className="fas fa-plus"></i>
                 <span> New Order</span>
             </button>
