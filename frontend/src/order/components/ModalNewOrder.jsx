@@ -103,7 +103,7 @@ export const ModalNewOrder = () => {
             await startSavingOrder(newOrderData);
             closeModalUi();
         } else {
-            await startUpdatingOrderStatus({_id: isActiveOrder._id, status: formValues.status});
+            await startUpdatingOrderStatus({ id: isActiveOrder._id, status: formValues.status });
             closeModalUi();
         }
     }
@@ -137,8 +137,9 @@ export const ModalNewOrder = () => {
                 <label>Status</label>
                 <select className="form-control" name='status' value={formValues.status} onChange={onInputChange}>
                     <option value="pending">Pending</option>
-                    <option value="in transit">In transit</option>
-                    <option value="delivered">Delivered</option>
+                    <option value="preparing">preparing</option>
+                    <option value="out for delivery">out for delivery</option>
+                    <option value="delivered">delivered</option>
                 </select>
             </div>
           <button

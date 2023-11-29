@@ -22,14 +22,11 @@ export const useOrderStore = () => {
     }
 
     const startSavingOrder = async ( newOrder ) => {
-      //TODO: Add backend call to save order
-      if (newOrder._id) {
-        const { data } = await deliveryTrackerApi.put(`/orders/${newOrder._id}`, newOrder);
-        console.log("Updating order");
-      } else {
+      try {
         const { data } = await deliveryTrackerApi.post('/orders', newOrder);
-        console.log({data});
         dispatch(addNewOrder(data));
+      } catch (error) {
+        console.log(error);
       }
     }
 
@@ -42,8 +39,15 @@ export const useOrderStore = () => {
       }
     }
     
-    const startUpdatingOrderStatus = async ({ _id, status }) => {
-      dispatch(updateStatus({  _id, status }));
+    const startUpdatingOrderStatus = async ({ id, status }) => {
+      try {
+        console.log(status)
+        const { data } = await deliveryTrackerApi.patch(`/orders/${id}/status`, {status});
+        console.log(data)
+        dispatch(updateStatus(data));
+      } catch (error) {
+        console.log(error);
+      }
     }
 
 
