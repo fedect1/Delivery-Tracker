@@ -25,7 +25,7 @@ export const orderSlice = createSlice({
             state.isActiveOrder = null;
         },
         updateStatus: (state, { payload }) => {
-            state.listOrders.map(order => {
+            state.listOrders = state.listOrders.map(order => {
                 if (order._id === payload._id) {
                     return {...order, status: payload.status}
                 }
@@ -34,7 +34,6 @@ export const orderSlice = createSlice({
             state.isActiveOrder = null;
         },
         onLoadOrders: (state, { payload = [] }) => {
-
             payload.forEach(order => {
                 const existingOrder = state.listOrders.some(dbOrder => dbOrder._id === order._id);
                 if (!existingOrder) {

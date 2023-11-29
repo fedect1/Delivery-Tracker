@@ -14,7 +14,7 @@ export const OrdersList = () => {
 
     useEffect(() => {
         startLoadingOrders();
-    }, []);
+    }, [listOrders]);
 
     return (
         <div>

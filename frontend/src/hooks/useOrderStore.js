@@ -23,7 +23,6 @@ export const useOrderStore = () => {
 
     const startSavingOrder = async ( newOrder ) => {
       try {
-        console.log( newOrder )
         const { data } = await deliveryTrackerApi.post('/orders', newOrder);
         dispatch(addNewOrder(data));
       } catch (error) {
@@ -42,9 +41,7 @@ export const useOrderStore = () => {
     
     const startUpdatingOrderStatus = async ({ id, status }) => {
       try {
-        console.log(status)
         const { data } = await deliveryTrackerApi.patch(`/orders/${id}/status`, {status});
-        console.log(data)
         dispatch(updateStatus(data));
       } catch (error) {
         console.log(error);

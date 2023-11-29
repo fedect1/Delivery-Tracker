@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useOrderStore } from "../../hooks/useOrderStore"
 
 export const DataTable = () => {
-    const { listOrders, startLoadingOrders } = useOrderStore();
+    const { listOrders, startLoadingOrders, onOrderChangeStatus } = useOrderStore();
     useEffect(() => {
         startLoadingOrders();
     }, []);
@@ -51,7 +51,7 @@ export const DataTable = () => {
                     <td>{order.trackerNumber}</td>
                     <td style={getStatusStyle(order.status)}>{capitalizeFirstLetter(order.status)}</td>
                     <td className="text-center">
-                        <button className="btn btn-primary text-center">
+                        <button className="btn btn-primary text-center" onClick={ ()=> onOrderChangeStatus(order._id)}>
                             <i className="fas fa-edit"></i>
                             <span> Status </span>
                         </button>

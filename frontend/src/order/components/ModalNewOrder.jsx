@@ -136,7 +136,7 @@ export const ModalNewOrder = () => {
           <div className="form-group mb-3">
                 <label>Status</label>
                 <select className="form-control" name='status' value={formValues.status} onChange={onInputChange}>
-                    <option value="pending">Pending</option>
+                    <option value="received">received</option>
                     <option value="preparing">preparing</option>
                     <option value="out for delivery">out for delivery</option>
                     <option value="delivered">delivered</option>
