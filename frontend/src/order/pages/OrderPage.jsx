@@ -1,14 +1,15 @@
-import { FabAddNew, ModalNewOrder, Navbar, OrdersList } from "../"
-import ordersData from "../../orders.json"
+import { DataTable, FabAddNew, ModalNewOrder, Navbar, OrdersList } from "../"
+
 
 export const OrderPage = () => {
 
   return (
     <>
      <Navbar />
-     <OrdersList orders = {[ordersData]} />
+     <OrdersList />
      <ModalNewOrder />
      <FabAddNew />
+     <DataTable />
     </>
   )
 }

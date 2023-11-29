@@ -7,3 +7,4 @@ export * from './components/OrderCard';
 export * from './components/OrdersList';
 export * from './components/ModalNewOrder';
 export * from './components/FabAddNew';
+export * from './components/DataTable';
