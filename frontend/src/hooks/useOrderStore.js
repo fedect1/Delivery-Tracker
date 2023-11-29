@@ -1,5 +1,5 @@
 import { useSelector, useDispatch } from 'react-redux' 
-import { addNewOrder, onLoadOrders, selectOrder, setActiveOrderModal, setActiveOrderModalToNull, updateStatus } from '../store/orders/orderSlice';
+import { addNewOrder, onLoadOrders, selectOrder, setActiveOrderModal, setActiveOrderModalToNull, updateStatus, deleteOrder } from '../store/orders/orderSlice';
 import { openModal } from '../store/ui/uiSlice';
 import deliveryTrackerApi from '../api/deliveryTracker';
 
@@ -48,6 +48,17 @@ export const useOrderStore = () => {
       }
     }
 
+    const startDeletingOrder = async (orderId) => {
+      try {
+        await deliveryTrackerApi.delete(`/orders/${orderId}`);
+        console.log("deleteOrder")
+
+        dispatch(deleteOrder(orderId));
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
 
   return {
     listOrders,
@@ -59,7 +70,8 @@ export const useOrderStore = () => {
     setEmptyFieldsForModal,
     startSavingOrder,
     startUpdatingOrderStatus,
-    startLoadingOrders
+    startLoadingOrders,
+    startDeletingOrder,
   }
 }
 

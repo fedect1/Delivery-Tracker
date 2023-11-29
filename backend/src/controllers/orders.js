@@ -65,7 +65,7 @@ export class orderController{
             if (!order) {
                 return res.status(404).json({ message: "Order not found" });
             }
-            res.status(204)
+            res.status(204).send();
         } catch (err) {
             next(err)
         }

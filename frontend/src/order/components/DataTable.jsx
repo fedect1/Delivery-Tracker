@@ -1,8 +1,9 @@
 import { useEffect } from "react";
 import { useOrderStore } from "../../hooks/useOrderStore"
+import Swal from 'sweetalert2'
 
 export const DataTable = () => {
-    const { listOrders, startLoadingOrders, onOrderChangeStatus } = useOrderStore();
+    const { listOrders, startLoadingOrders, onOrderChangeStatus, startDeletingOrder } = useOrderStore();
     useEffect(() => {
         startLoadingOrders();
     }, []);
@@ -26,6 +27,23 @@ export const DataTable = () => {
         return string.charAt(0).toUpperCase() + string.slice(1);
     }
 
+    const onConfirmDelete = (orderId) => {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+        }).then((result) => {
+            if (result.isConfirmed) {
+                startDeletingOrder(orderId);
+                Swal.fire(
+                    'Deleted!',
+                    'Your order has been deleted.',
+                    'success'
+                )
+            }
+        })
+    }
 
   return (
     <table className="table table-striped container" style={{ width: '100%' }}>
@@ -57,7 +75,7 @@ export const DataTable = () => {
                         </button>
                     </td>
                     <td className="text-center">
-                        <button className="btn btn-warning">
+                        <button className="btn btn-warning" onClick={ ()=> onConfirmDelete(order._id)}>
                             <i className="fas fa-trash-alt"></i>
                             <span> Delete </span>
                         </button>
