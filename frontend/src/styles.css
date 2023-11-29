@@ -41,13 +41,14 @@
 
 .fab {
     background-color: #007bff;
-    border-radius: 50%;
     color: white;
     cursor: pointer;
-    height: 50px;
+    height: auto;
+    width: auto;
     position: fixed;
-    right: 20px;
-    width: 50px;
+    right: 50px;
+    bottom: 100px;
     z-index: 1000;
+    letter-spacing: 1px;
 }
 
