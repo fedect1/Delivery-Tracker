@@ -1,4 +1,4 @@
-import { DataTable, FabAddNew, ModalNewOrder, Navbar} from "../"
+import { DataTable, FabAddNew, ModalChangeStatus, ModalNewOrder, Navbar} from "../"
 
 
 export const OrderPage = () => {
@@ -7,6 +7,7 @@ export const OrderPage = () => {
     <>
      <Navbar />
      <ModalNewOrder />
+     <ModalChangeStatus />
      <FabAddNew />
      <DataTable />
     </>
