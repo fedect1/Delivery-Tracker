@@ -23,7 +23,16 @@ export class orderController{
             }
             const userId = req.userId;
             const order = await OrderModel.createOrder({input: validatedOrder.data, userId});
-            res.status(201).json(order);
+            const response = {
+                id: order._id,
+                trackerNumber: order.trackerNumber,
+                costumerInfo: order.costumerInfo,
+                status: order.status,
+                statusUpdates: order.statusUpdates,
+                createdAt: order.statusUpdates[0]?.timestamp,
+            }
+            
+            res.status(201).json(response);
         } catch (err) {
             next(err)
         }
