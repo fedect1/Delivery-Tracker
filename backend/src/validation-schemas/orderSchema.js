@@ -1,11 +1,7 @@
 import zod from 'zod';
 
 // VALIDATION SCHEMAS FOR POST /orders
-const itemSchema = zod.object({
-    itemName: zod.string(),
-    quantity: zod.number().positive(),
-    pricePerItem: zod.number().positive(),
-});
+
 
 const orderSchema = zod.object({
     trackerNumber: zod.string(),
@@ -15,9 +11,7 @@ const orderSchema = zod.object({
         phone: zod.string(),
         email: zod.string().email(),
     }),
-    orderDetails: zod.object({
-        items: zod.array(itemSchema),
-    }),
+
 });
 
 const validateOrder = (order) => {
@@ -31,9 +25,6 @@ const orderUpdateSchema = zod.object({
         address: zod.string().optional(),
         phone: zod.string().optional(),
         email: zod.string().email().optional(),
-    }).optional(),
-    orderDetails: zod.object({
-        items: zod.array(itemSchema).optional(),
     }).optional(),
     status: zod.enum(['received', 'preparing', 'out for delivery', 'delivered']).optional(),
 });
