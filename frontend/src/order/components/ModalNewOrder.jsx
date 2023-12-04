@@ -19,6 +19,7 @@ const customStyles = {
 Modal.setAppElement('#root');
 
 export const ModalNewOrder = () => {
+    const [ statusHidden, setStatusHidden ] = useState("received");
     const { isNewOrderModalOpen, closeModalUi } = useUiStore();
     const { isActiveOrder, startSavingOrder, startUpdatingOrderStatus } = useOrderStore();
     const [formValues, setFormValues] = useState({
@@ -30,21 +31,17 @@ export const ModalNewOrder = () => {
         pricePerItem: '',
         quantity: '',
         tracknumber: '',
+        status: '',
     });
 
     useEffect(() => {
         if (isActiveOrder !== null) {
             setFormValues({
-                fullname: isActiveOrder.costumerInfo.name,
-                address: isActiveOrder.costumerInfo.address,
-                phone: isActiveOrder.costumerInfo.phone,
-                email: isActiveOrder.costumerInfo.email,
-                itemname: isActiveOrder.orderDetails.items[0].itemName,
-                pricePerItem: isActiveOrder.orderDetails.items[0].pricePerItem,
-                quantity: isActiveOrder.orderDetails.items[0].quantity,
+                ...formValues,
                 tracknumber: isActiveOrder.trackerNumber,
                 status: isActiveOrder.status,
-            });
+            })
+            setStatusHidden(isActiveOrder.status);
         } else {
             setFormValues({
                 fullname: '',
@@ -74,10 +71,6 @@ export const ModalNewOrder = () => {
     const onSubmit = async (e) => {
         e.preventDefault();
         console.log(formValues)
-        if (formValues.fullname === '' || formValues.address === '' || formValues.phone === '' || formValues.email === '' || formValues.itemname === '' || formValues.price === '' || formValues.quantity === '' || formValues.tracknumber === '') {
-            Swal.fire('Error', 'All fields are required', 'error');
-            return;
-        }
         const newOrderData = {
             trackerNumber: formValues.tracknumber,
             costumerInfo: {
@@ -93,13 +86,17 @@ export const ModalNewOrder = () => {
                         quantity: parseInt(formValues.quantity), 
                         pricePerItem: parseFloat(formValues.pricePerItem) 
                     },
-
+                    
                 ],
                 totalPrice: parseFloat(formValues.price) * parseInt(formValues.quantity), 
             },
             status: formValues.status,
         };
         if (isActiveOrder === null) {
+            if (formValues.fullname === '' || formValues.address === '' || formValues.phone === '' || formValues.email === '' || formValues.itemname === '' || formValues.price === '' || formValues.quantity === '' || formValues.tracknumber === '') {
+                Swal.fire('Error', 'All fields are required', 'error');
+                return;
+            }
             await startSavingOrder(newOrderData);
             closeModalUi();
         } else {
@@ -108,47 +105,76 @@ export const ModalNewOrder = () => {
         }
     }
 
+    const statusOptions = [
+        { value: "received", label: "Received" },
+        { value: "preparing", label: "Preparing" },
+        { value: "out for delivery", label: "Out for Delivery" },
+        { value: "delivered", label: "Delivered" }
+    ];
+
+
+
   return (
     <Modal isOpen={ isNewOrderModalOpen } onRequestClose={ onCloseModal } style={ customStyles } className="modal" overlayClassName="modal-fondo" closeTimeoutMS={ 200 }>
-      <h1> New Order </h1>
-      <hr />
-      <form className="container" onSubmit={ onSubmit }>
-          <div className="form-group mb-2">
-              <label>Costumer info</label>
-              <input className="form-control" placeholder="Fullname" name='fullname' value={ formValues.fullname } onChange={ onInputChange }/>
-              <input className="form-control mt-2" placeholder="Address" name='address' value={formValues.address} onChange={onInputChange}/>
-              <input className="form-control mt-2" placeholder="Phone" name='phone' value={formValues.phone} onChange={onInputChange}/>
-              <input className="form-control mt-2" placeholder="Email" name='email' value={formValues.email} onChange={onInputChange}/>
-          </div>
+      <form className="modal-content" onSubmit={ onSubmit }>
+        <div className="modal-header">
+            <h5 className="modal-title">{isActiveOrder ? 'Change Status' : 'Create New Order'}</h5>
+        </div>
+        { isActiveOrder ? (
+            <div className="modal-body">
+                <div className="form-group">
+                    <label htmlFor="trackNumber">Track Number</label>
+                    <input id="trackNumber" type="text" className="form-control" value={formValues.tracknumber} readOnly />
+                </div>
 
-          <div className="form-group mb-2">
-              <label>Order Details</label>
-              <input className="form-control" placeholder="Item name" name='itemname' value={formValues.itemname} onChange={onInputChange}/>
-              <input className="form-control mt-2" placeholder="Price per item" name='pricePerItem' value={formValues.pricePerItem} onChange={onInputChange}/>
-              <input className="form-control mt-2" placeholder="Quantity" name='quantity' value={formValues.quantity} onChange={onInputChange}/>
-          </div>
+                <div className="form-group">
+                    <label htmlFor="currentStatus">Current Status</label>
+                    <input id="currentStatus" type="text" className="form-control" value={formValues.status} readOnly />
+                </div>
 
-          <hr />
-          <div className="form-group mb-3">
-              <label>Track number</label>
-              <input className="form-control" placeholder="Track number" name='tracknumber' value={formValues.tracknumber} onChange={onInputChange}/>
-          </div>
-          <div className="form-group mb-3">
-                <label>Status</label>
-                <select className="form-control" name='status' value={formValues.status} onChange={onInputChange}>
-                    <option value="received">received</option>
-                    <option value="preparing">preparing</option>
-                    <option value="out for delivery">out for delivery</option>
-                    <option value="delivered">delivered</option>
-                </select>
+                <div className="form-group">
+                    <label htmlFor="newStatus">New Status</label>
+                    <select id="newStatus" className="form-control" name='status' value={formValues.status} onChange={onInputChange}>
+                        {statusOptions.filter((option) => option.value !== statusHidden).map((option) => (
+                            <option key={option.value} value={option.value}>{option.label}</option>
+                        ))}
+                    </select>
+                </div>
             </div>
-          <button
-              type="submit"
-              className="btn btn-outline-primary btn-block"
-          >
-              <i className="far fa-save"></i>
-              <span> Save</span>
-          </button>
+        ) : (
+            <div className="modal-body">
+
+                <div className="form-group mb-2">
+                    <label>Costumer info</label>
+                    <input className="form-control" placeholder="Fullname" name='fullname' value={ formValues.fullname } onChange={ onInputChange }/>
+                    <input className="form-control mt-2" placeholder="Address" name='address' value={formValues.address} onChange={onInputChange}/>
+                    <input className="form-control mt-2" placeholder="Phone" name='phone' value={formValues.phone} onChange={onInputChange}/>
+                    <input className="form-control mt-2" placeholder="Email" name='email' value={formValues.email} onChange={onInputChange}/>
+                </div>
+
+                <div className="form-group mb-2">
+                    <label>Order Details</label>
+                    <input className="form-control" placeholder="Item name" name='itemname' value={formValues.itemname} onChange={onInputChange}/>
+                    <input className="form-control mt-2" placeholder="Price per item" name='pricePerItem' value={formValues.pricePerItem} onChange={onInputChange}/>
+                    <input className="form-control mt-2" placeholder="Quantity" name='quantity' value={formValues.quantity} onChange={onInputChange}/>
+                </div>
+
+                <hr />
+                <div className="form-group mb-3">
+                    <label>Track number</label>
+                    <input className="form-control" placeholder="Track number" name='tracknumber' value={formValues.tracknumber} onChange={onInputChange}/>
+                </div>
+            </div>
+             )}
+        <div className="modal-footer">
+            <button
+                type="submit"
+                className="btn btn-outline-primary btn-block"
+            >
+                <i className="far fa-save"></i>
+                <span> Save</span>
+            </button>
+        </div>
 
       </form>
     </Modal>
