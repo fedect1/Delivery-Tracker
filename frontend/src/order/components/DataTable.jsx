@@ -1,6 +1,8 @@
 import { useEffect } from "react";
 import { useOrderStore } from "../../hooks/useOrderStore"
 import Swal from 'sweetalert2'
+import PopoverStatusInfo from "./PopoverStatusInfo";
+import dateSetter from "../../helpers/dateSetter";
 
 export const DataTable = () => {
     const { listOrders, startLoadingOrders, onOrderChangeStatus, startDeletingOrder } = useOrderStore();
@@ -49,6 +51,7 @@ export const DataTable = () => {
     <table className="table table-striped container" style={{ width: '100%' }}>
         <thead>
             <tr>
+                <th>Created At</th>
                 <th>Fullname</th>
                 <th>Address</th>
                 <th>Phone</th>
@@ -62,12 +65,14 @@ export const DataTable = () => {
         <tbody>
             {listOrders.map((order, index) => (
                 <tr key={index}>
+                    <td>{dateSetter(order.createdAt)}</td>
                     <td>{order.costumerInfo.name}</td>
                     <td>{order.costumerInfo.address}</td>
                     <td>{order.costumerInfo.phone}</td>
                     <td>{order.costumerInfo.email}</td>
                     <td>{order.trackerNumber}</td>
-                    <td style={getStatusStyle(order.status)}>{capitalizeFirstLetter(order.status)}</td>
+                    {/* <td style={getStatusStyle(order.status)}>{capitalizeFirstLetter(order.status)}</td> */}
+                    <td style={getStatusStyle(order.status)}><PopoverStatusInfo content={order.statusUpdates}>{capitalizeFirstLetter(order.status)}</PopoverStatusInfo></td>
                     <td className="text-center">
                         <button className="btn btn-primary text-center" onClick={ ()=> onOrderChangeStatus(order._id)}>
                             <i className="fas fa-edit"></i>

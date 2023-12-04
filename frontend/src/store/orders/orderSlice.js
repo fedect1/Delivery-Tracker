@@ -27,7 +27,7 @@ export const orderSlice = createSlice({
         updateStatus: (state, { payload }) => {
             state.listOrders = state.listOrders.map(order => {
                 if (order._id === payload._id) {
-                    return {...order, status: payload.status}
+                    return {...order, status: payload.status, statusUpdate: payload.statusUpdate}
                 }
                 return order;
             })
