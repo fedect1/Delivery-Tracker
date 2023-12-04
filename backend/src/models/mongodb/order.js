@@ -1,5 +1,6 @@
-import mongoose from "mongoose";
+import mongoose, { get } from "mongoose";
 import UserModel from './User.js';
+import { v4 as uuidv4 } from 'uuid';
 
 const itemSchema = new mongoose.Schema({
     itemName: {
@@ -108,8 +109,10 @@ class Order {
             if (!user) {
                 throw new Error("User not found");
             }
+
+            const createTrackerNumber = uuidv4();
             
-            const order = new this({...input, user: userId, statusUpdates: [{update: 'received'}]});
+            const order = new this({...input, user: userId, statusUpdates: [{update: 'received'}], trackerNumber: createTrackerNumber});
             await order.save();
 
             user.orders.push(order._id)
