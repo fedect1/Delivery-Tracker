@@ -5,7 +5,17 @@ export class orderController{
         try{
             const userId = req.userId;
             const orders = await OrderModel.findAll(userId);
-            res.status(200).json(orders);
+            const response = orders.map(order => {
+                return {
+                    _id: order._id,
+                    trackerNumber: order.trackerNumber,
+                    costumerInfo: order.costumerInfo,
+                    status: order.status,
+                    statusUpdates: order.statusUpdates,
+                    createdAt: order.statusUpdates[0]?.timestamp,
+                }
+            })
+            res.status(200).json(response);
         } catch (err) {
             next(err)
         }
