@@ -2,20 +2,7 @@ import mongoose, { get } from "mongoose";
 import UserModel from './User.js';
 import { v4 as uuidv4 } from 'uuid';
 
-const itemSchema = new mongoose.Schema({
-    itemName: {
-        type: String,
-        required: true,
-    },
-    quantity: {
-        type: Number,
-        required: true,
-    },
-    pricePerItem: {
-        type: Number,
-        required: true,
-    }
-}, {_id: false});
+
 
 const statusUpdateSchema = new mongoose.Schema({
     timestamp: {
@@ -59,12 +46,7 @@ const orderSchema = new mongoose.Schema({
             required: true,
         }
     },
-    orderDetails: {
-        items: {
-            type: [itemSchema],
-            required: true,
-        }
-    },
+
     status: {
         type: String,
         enum: ['received', 'preparing', 'out for delivery', 'delivered'],
