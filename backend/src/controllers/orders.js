@@ -24,7 +24,7 @@ export class orderController{
             const userId = req.userId;
             const order = await OrderModel.createOrder({input: validatedOrder.data, userId});
             const response = {
-                id: order._id,
+                _id: order._id,
                 trackerNumber: order.trackerNumber,
                 costumerInfo: order.costumerInfo,
                 status: order.status,
@@ -47,7 +47,12 @@ export class orderController{
             if (!order) {
                 return res.status(404).json({ message: "Order not found" });
             }
-            res.status(200).json(order);
+            const response = {
+                _id: order._id,
+                status: order.status,
+                statusUpdates: order.statusUpdates,
+            }
+            res.status(201).json(response);
         } catch (err) {
             next(err)
         }
