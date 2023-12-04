@@ -65,7 +65,15 @@ export class orderController{
             if (!order) {
                 return res.status(404).json({ message: "Order not found" });
             }
-            res.status(200).json(order);
+
+            const response = {
+                trackerNumber: order.trackerNumber,
+                costumerInfo: order.costumerInfo,
+                status: order.status,
+                statusUpdates: order.statusUpdates,
+                createdAt: order.statusUpdates[0]?.timestamp,
+            }
+            res.status(201).json(response);
         } catch (err) {
             next(err)
         }
