@@ -27,19 +27,16 @@ export const ModalNewOrder = () => {
         address: '',
         phone: '',
         email: '',
-        itemname: '',
-        pricePerItem: '',
-        quantity: '',
-        tracknumber: '',
         status: '',
+        tracknumber: '',
     });
 
     useEffect(() => {
         if (isActiveOrder !== null) {
             setFormValues({
                 ...formValues,
-                tracknumber: isActiveOrder.trackerNumber,
                 status: isActiveOrder.status,
+                tracknumber: isActiveOrder.trackerNumber,
             })
             setStatusHidden(isActiveOrder.status);
         } else {
@@ -48,11 +45,8 @@ export const ModalNewOrder = () => {
                 address: '',
                 phone: '',
                 email: '',
-                itemname: '',
-                pricePerItem: '',
-                quantity: '',
-                tracknumber: '',
                 status: '',
+                tracknumber: '',
             });
         }
     }, [isActiveOrder]);
@@ -70,30 +64,17 @@ export const ModalNewOrder = () => {
 
     const onSubmit = async (e) => {
         e.preventDefault();
-        console.log(formValues)
         const newOrderData = {
-            trackerNumber: formValues.tracknumber,
             costumerInfo: {
                 name: formValues.fullname,
                 phone: formValues.phone,
                 address: formValues.address,
                 email: formValues.email,
             },
-            orderDetails: {
-                items: [
-                    {
-                        itemName: formValues.itemname,
-                        quantity: parseInt(formValues.quantity), 
-                        pricePerItem: parseFloat(formValues.pricePerItem) 
-                    },
-                    
-                ],
-                totalPrice: parseFloat(formValues.price) * parseInt(formValues.quantity), 
-            },
             status: formValues.status,
         };
         if (isActiveOrder === null) {
-            if (formValues.fullname === '' || formValues.address === '' || formValues.phone === '' || formValues.email === '' || formValues.itemname === '' || formValues.price === '' || formValues.quantity === '' || formValues.tracknumber === '') {
+            if (formValues.fullname === '' || formValues.address === '' || formValues.phone === '' || formValues.email === '' ) {
                 Swal.fire('Error', 'All fields are required', 'error');
                 return;
             }
@@ -129,7 +110,7 @@ export const ModalNewOrder = () => {
 
                 <div className="form-group">
                     <label htmlFor="currentStatus">Current Status</label>
-                    <input id="currentStatus" type="text" className="form-control" value={formValues.status} readOnly />
+                    <input id="currentStatus" type="text" className="form-control" value={statusHidden} readOnly />
                 </div>
 
                 <div className="form-group">
@@ -152,18 +133,6 @@ export const ModalNewOrder = () => {
                     <input className="form-control mt-2" placeholder="Email" name='email' value={formValues.email} onChange={onInputChange}/>
                 </div>
 
-                <div className="form-group mb-2">
-                    <label>Order Details</label>
-                    <input className="form-control" placeholder="Item name" name='itemname' value={formValues.itemname} onChange={onInputChange}/>
-                    <input className="form-control mt-2" placeholder="Price per item" name='pricePerItem' value={formValues.pricePerItem} onChange={onInputChange}/>
-                    <input className="form-control mt-2" placeholder="Quantity" name='quantity' value={formValues.quantity} onChange={onInputChange}/>
-                </div>
-
-                <hr />
-                <div className="form-group mb-3">
-                    <label>Track number</label>
-                    <input className="form-control" placeholder="Track number" name='tracknumber' value={formValues.tracknumber} onChange={onInputChange}/>
-                </div>
             </div>
              )}
         <div className="modal-footer">

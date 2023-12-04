@@ -4,7 +4,6 @@ import zod from 'zod';
 
 
 const orderSchema = zod.object({
-    trackerNumber: zod.string(),
     costumerInfo: zod.object({
         name: zod.string(),
         address: zod.string(),
