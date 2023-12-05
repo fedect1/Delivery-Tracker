@@ -76,6 +76,7 @@ Before running the application, note that the backend server is configured to ru
   "dev": "cross-env NODE_ENV=development PORT=4000 nodemon app.js",
   ...
 }
+```
 
 Return to the root directory of your project and use Docker Compose to build and run the containers:
 
@@ -83,7 +84,7 @@ Return to the root directory of your project and use Docker Compose to build and
   docker-compose up --build
 ```
 
-Once the containers are up and running, you can access the frontend of WD Messenger at `http://localhost:5173` in your web browser.
+Once the containers are up and running, you can access the frontend of Delivery-tracker at `http://localhost:5173` in your web browser.
 
 ### Stopping the Application
 
