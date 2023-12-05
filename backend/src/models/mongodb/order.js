@@ -1,20 +1,8 @@
-import mongoose from "mongoose";
+import mongoose, { get } from "mongoose";
 import UserModel from './User.js';
+import { v4 as uuidv4 } from 'uuid';
 
-const itemSchema = new mongoose.Schema({
-    itemName: {
-        type: String,
-        required: true,
-    },
-    quantity: {
-        type: Number,
-        required: true,
-    },
-    pricePerItem: {
-        type: Number,
-        required: true,
-    }
-}, {_id: false});
+
 
 const statusUpdateSchema = new mongoose.Schema({
     timestamp: {
@@ -58,12 +46,7 @@ const orderSchema = new mongoose.Schema({
             required: true,
         }
     },
-    orderDetails: {
-        items: {
-            type: [itemSchema],
-            required: true,
-        }
-    },
+
     status: {
         type: String,
         enum: ['received', 'preparing', 'out for delivery', 'delivered'],
@@ -108,8 +91,10 @@ class Order {
             if (!user) {
                 throw new Error("User not found");
             }
+
+            const createTrackerNumber = uuidv4();
             
-            const order = new this({...input, user: userId, statusUpdates: [{update: 'received'}]});
+            const order = new this({...input, user: userId, statusUpdates: [{update: 'received'}], trackerNumber: createTrackerNumber});
             await order.save();
 
             user.orders.push(order._id)
@@ -121,9 +106,9 @@ class Order {
             throw err;
         } 
     }
-    static async updateStatus({trackerNumber, input, userId}) {
+    static async updateStatus({orderId, input, userId}) {
         try {
-            const order = await this.findOne({ trackerNumber });
+            const order = await this.findById(orderId);
             if (!order) {
                 throw new Error("Order not found");
             }

@@ -5,7 +5,17 @@ export class orderController{
         try{
             const userId = req.userId;
             const orders = await OrderModel.findAll(userId);
-            res.status(200).json(orders);
+            const response = orders.map(order => {
+                return {
+                    _id: order._id,
+                    trackerNumber: order.trackerNumber,
+                    costumerInfo: order.costumerInfo,
+                    status: order.status,
+                    statusUpdates: order.statusUpdates,
+                    createdAt: order.statusUpdates[0]?.timestamp,
+                }
+            })
+            res.status(200).json(response);
         } catch (err) {
             next(err)
         }
@@ -23,7 +33,16 @@ export class orderController{
             }
             const userId = req.userId;
             const order = await OrderModel.createOrder({input: validatedOrder.data, userId});
-            res.status(201).json(order);
+            const response = {
+                _id: order._id,
+                trackerNumber: order.trackerNumber,
+                costumerInfo: order.costumerInfo,
+                status: order.status,
+                statusUpdates: order.statusUpdates,
+                createdAt: order.statusUpdates[0]?.timestamp,
+            }
+            
+            res.status(201).json(response);
         } catch (err) {
             next(err)
         }
@@ -31,14 +50,19 @@ export class orderController{
 
     static async updateStatus(req, res, next){
         try{
-            const { trackerNumber } = req.params;
+            const { orderId } = req.params;
             const validatedInput = validateStatusUpdate(req.body);
             const userId = req.userId;
-            const order = await OrderModel.updateStatus({trackerNumber, input: validatedInput, userId});
+            const order = await OrderModel.updateStatus({orderId, input: validatedInput, userId});
             if (!order) {
                 return res.status(404).json({ message: "Order not found" });
             }
-            res.status(200).json(order);
+            const response = {
+                _id: order._id,
+                status: order.status,
+                statusUpdates: order.statusUpdates,
+            }
+            res.status(201).json(response);
         } catch (err) {
             next(err)
         }
@@ -51,7 +75,15 @@ export class orderController{
             if (!order) {
                 return res.status(404).json({ message: "Order not found" });
             }
-            res.status(200).json(order);
+
+            const response = {
+                trackerNumber: order.trackerNumber,
+                costumerInfo: order.costumerInfo,
+                status: order.status,
+                statusUpdates: order.statusUpdates,
+                createdAt: order.statusUpdates[0]?.timestamp,
+            }
+            res.status(201).json(response);
         } catch (err) {
             next(err)
         }
@@ -65,7 +97,7 @@ export class orderController{
             if (!order) {
                 return res.status(404).json({ message: "Order not found" });
             }
-            res.status(204)
+            res.status(204).send();
         } catch (err) {
             next(err)
         }
