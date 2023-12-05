@@ -1,6 +1,7 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { LoginPage } from '../auth'
 import { OrderPage } from '../order'
+import { TrackingStatus } from '../status'
 import { useAuthStore } from '../hooks/useAuthStore'
 import { useEffect } from 'react'
 
@@ -21,6 +22,7 @@ export const AppRouter = () => {
       {(status === 'non-authenticated') ? ( 
         <>
           <Route path="/auth/*" element={<LoginPage />} />
+          <Route path="/track-order" element={<TrackingStatus />} />
           <Route path="/*" element={<Navigate to="auth/login"/>} />
         </>
         )
