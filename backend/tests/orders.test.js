@@ -154,8 +154,26 @@ describe("checking Zod validation", () => {
             .expect(400)
             .expect("Content-Type", /application\/json/)
             .expect(response => {
-                expect(response.body.message).toContain('Validation failed: CostumerInfo is required');
+                expect(response.body.message).toContain("Validation failed: Name is required");
             }) 
+    })
+    test("order with missing required property phone can not be added", async () => {
+        const newOrder = {
+            "costumerInfo": {
+                "name": "Jose Lues",
+                "address": "1563 Kreuz, Berlin, Germany",
+                "email": "fed@gmail.com",
+            },
+        }
+        await api
+            .post("/orders")
+            .set('Authorization', `Bearer ${tokenTestUser}`)
+            .send(newOrder)
+            .expect(400)
+            .expect("Content-Type", /application\/json/)
+            .expect(response => {
+                expect(response.body.message).toContain("Validation failed: Phone is required");
+            })
     })
 
 })        
