@@ -175,6 +175,42 @@ describe("checking Zod validation", () => {
                 expect(response.body.message).toContain("Validation failed: Phone is required");
             })
     })
+    test("order with missing required property address can not be added", async () => {
+        const newOrder = {
+            "costumerInfo": {
+                "name": "Pepe Picetto",
+                "phone": "982-653-4750",
+                "email": "pepe@gmail.com",
+            },
+        }
+        await api
+            .post("/orders")
+            .set('Authorization', `Bearer ${tokenTestUser}`)
+            .send(newOrder)
+            .expect(400)
+            .expect("Content-Type", /application\/json/)
+            .expect(response => {
+                expect(response.body.message).toContain("Validation failed: Address is required");
+            })
+    })
+    test("order with missing required property email can not be added", async () => {
+        const newOrder = {
+            "costumerInfo": {
+                "name": "Pepe Picetto",
+                "phone": "982-653-4750",
+                "address": "1563 Kreuz, Berlin, Germany",
+            },
+        }
+        await api
+            .post("/orders")
+            .set('Authorization', `Bearer ${tokenTestUser}`)
+            .send(newOrder)
+            .expect(400)
+            .expect("Content-Type", /application\/json/)
+            .expect(response => {
+                expect(response.body.message).toContain("Validation failed: Email is required");
+            })
+    })
 
 })        
 
