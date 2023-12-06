@@ -8,6 +8,7 @@ import { response } from 'express';
 
 const api = supertest(app);
 let tokenTestUser;
+let orderIdTestUser;
 beforeEach(async () => {
     const userId = [];
     await UserModel.deleteMany({});
@@ -42,8 +43,23 @@ beforeEach(async () => {
         .expect(200)
 
     tokenTestUser = response.body.token
+    const orderTestUser = {
+        "costumerInfo": {
+            "name": "Ricardo Martin",
+            "phone": "163-478-7100",
+            "address": "123 Main St, Townsville, Nation",
+            "email": "ric@gmail.com"
+        },
+    }
+    const responseOrder = await api
+        .post("/orders")
+        .set('Authorization', `Bearer ${tokenTestUser}`)
+        .send(orderTestUser)
+        .expect(201)
+        .expect("Content-Type", /application\/json/)
+    orderIdTestUser=responseOrder.body._id
 })
-describe("when the orders are posted", () => {
+describe("POST /orders - when the orders are posted", () => {
     test("orders are returned as json", async () => {
 
         await api
@@ -138,7 +154,7 @@ describe("when the orders are posted", () => {
         expect(Object.keys(response.body).length).toBe(6)
     })
 })
-describe("checking Zod validation", () => {
+describe("POST /orders - checking Zod validation", () => {
     // missing required property
     test("order with missing required property name can not be added", async () => {
         const newOrder = {
@@ -305,9 +321,76 @@ describe("checking Zod validation", () => {
             .send(newOrder)
             .expect(400)
     })
-
-
-})        
+    test("order with invalid property type email can not be added", async () => {
+        const newOrder = {
+            "costumerInfo": {
+                "name": "Jorge Luis",
+                "phone": "982-653-4750",
+                "address": "1563 Kreuz, Berlin, Germany",
+                "email": "fede@gmailcom",
+            },
+        }
+        await api
+            .post("/orders")
+            .set('Authorization', `Bearer ${tokenTestUser}`)
+            .send(newOrder)
+            .expect(400)
+    })
+})
+describe("PATCH /orders/:trackerNumber/status - when the status is updated", () => {
+    test("status is updated as json", async () => {
+        await api
+            .patch(`/orders/${orderIdTestUser}/status`)
+            .set('Authorization', `Bearer ${tokenTestUser}`)
+            .send({
+                "status": "preparing"
+            })
+            .expect(200)
+            .expect("Content-Type", /application\/json/);
+    })
+    test("status is updated and response: _id, status, statusUpdates", async () => {
+        const response = await api
+            .patch(`/orders/${orderIdTestUser}/status`)
+            .set('Authorization', `Bearer ${tokenTestUser}`)
+            .send({
+                "status": "out for delivery"
+            })
+            .expect(200)
+            .expect("Content-Type", /application\/json/)
+        expect(response.body).toHaveProperty("_id")
+        expect(response.body).toHaveProperty("status")
+        expect(response.body).toHaveProperty("statusUpdates")
+        expect(Object.keys(response.body).length).toBe(3)
+    })
+    test("status is updated and response: _id, status, statusUpdates", async () => {
+        const response = await api
+            .patch(`/orders/${orderIdTestUser}/status`)
+            .set('Authorization', `Bearer ${tokenTestUser}`)
+            .send({
+                "status": "delivered"
+            })
+            .expect(200)
+            .expect("Content-Type", /application\/json/)
+        expect(response.body).toHaveProperty("_id")
+        expect(response.body).toHaveProperty("status")
+        expect(response.body).toHaveProperty("statusUpdates")
+        expect(Object.keys(response.body).length).toBe(3)
+    })
+    test("status is updated and response: _id, status, statusUpdates", async () => {
+        const response = await api
+            .patch(`/orders/${orderIdTestUser}/status`)
+            .set('Authorization', `Bearer ${tokenTestUser}`)
+            .send({
+                "status": "preparing"
+            })
+            .expect(200)
+            .expect("Content-Type", /application\/json/)
+        expect(response.body).toHaveProperty("_id")
+        expect(response.body).toHaveProperty("status")
+        expect(response.body).toHaveProperty("statusUpdates")
+        expect(Object.keys(response.body).length).toBe(3)
+    })
+})
 
 afterAll(() => {
     mongoose.connection.close();
