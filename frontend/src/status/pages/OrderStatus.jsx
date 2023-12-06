@@ -2,6 +2,7 @@ import { useParams } from "react-router-dom"
 
 export const OrderStatus = () => {
     const {orderId} = useParams()
+    
   return (
     <div className="card mt-5" style={{ maxWidth: '25rem', margin: 'auto' }}>
       <div className="card-header text-center">The status for order <span className="text-info">{orderId}</span></div>

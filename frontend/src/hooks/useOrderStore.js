@@ -51,8 +51,6 @@ export const useOrderStore = () => {
     const startDeletingOrder = async (orderId) => {
       try {
         await deliveryTrackerApi.delete(`/orders/${orderId}`);
-        console.log("deleteOrder")
-
         dispatch(deleteOrder(orderId));
       } catch (error) {
         console.log(error);
