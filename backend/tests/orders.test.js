@@ -52,9 +52,7 @@ describe("when the orders are posted", () => {
             .expect(200)
             .expect("Content-Type", /application\/json/);
     })
-
     test("a valid order can be added", async () => {
-
         const newOrder = {
             "trackerNumber": "ORD-12345ABO",
             "costumerInfo": {
@@ -90,12 +88,75 @@ describe("when the orders are posted", () => {
             .send(newOrder)
             .expect(201)
             .expect("Content-Type", /application\/json/);
-
-
+    })
+    test("valid order can be added and response: _id, trackerNumber, costumerInfo, status, statusUpdates, createdAt", async () => {
+        const newOrder = {
+            "costumerInfo": {
+                "name": "Mario Luis Espinetta",
+                "phone": "123-854-7320",
+                "address": "133 Carl, Berlin, Germany",
+                "email": "spi@gmail.com"
+            }
+        }
+        const response = await api
+            .post("/orders")
+            .set('Authorization', `Bearer ${tokenTestUser}`)
+            .send(newOrder)
+            .expect(201)
+            .expect("Content-Type", /application\/json/)
+        expect(response.body).toHaveProperty("_id")
+        expect(response.body).toHaveProperty("trackerNumber")
+        expect(response.body).toHaveProperty("costumerInfo")
+        expect(response.body).toHaveProperty("status")
+        expect(response.body).toHaveProperty("statusUpdates")
+        expect(response.body).toHaveProperty("createdAt")
+        expect(Object.keys(response.body).length).toBe(6)
+    })
+    test("order with additional properties can be added taking the vaild ones", async () => {
+        const newOrder = {
+            "trackerNumber": "ORD-12345ABO",
+            "costumerInfo": {
+                "name": "Mario Luis",
+                "phone": "567-854-7320",
+                "address": "156 Rosentales, Berlin, Germany",
+                "email": "mar@gmail.com",
+                "additionalProperty": "additionalProperty"
+            },
+        }
+        const response = await api
+            .post("/orders")
+            .set('Authorization', `Bearer ${tokenTestUser}`)
+            .send(newOrder)
+            .expect(201)
+            .expect("Content-Type", /application\/json/)
+        expect(response.body).toHaveProperty("_id")
+        expect(response.body).toHaveProperty("trackerNumber")
+        expect(response.body).toHaveProperty("costumerInfo")
+        expect(response.body).toHaveProperty("status")
+        expect(response.body).toHaveProperty("statusUpdates")
+        expect(response.body).toHaveProperty("createdAt")
+        expect(Object.keys(response.body).length).toBe(6)
     })
 })
 describe("checking Zod validation", () => {
-    
+    test("order with missing required property name can not be added", async () => {
+        const newOrder = {
+            "costumerInfo": {
+                "phone": "567-854-7320",
+                "address": "1578 Kreuz, Berlin, Germany",
+                "email": "mari@gmail.com",
+            },
+        }
+        await api
+            .post("/orders")
+            .set('Authorization', `Bearer ${tokenTestUser}`)
+            .send(newOrder)
+            .expect(400)
+            .expect("Content-Type", /application\/json/)
+            .expect(response => {
+                expect(response.body.message).toContain('Validation failed: CostumerInfo is required');
+            }) 
+    })
 
 })        
 
