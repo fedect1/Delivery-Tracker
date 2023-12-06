@@ -1,8 +1,22 @@
 import { useParams } from "react-router-dom"
-
+import { useGetOrderByTrackingNum } from "../../hooks/useGetOrderByTrackingNum"
+import { useEffect, useState } from "react"
 export const OrderStatus = () => {
+    const { startLoadingOrderByTrackingNum } = useGetOrderByTrackingNum()
+    const [order, setOrder] = useState({})
     const {orderId} = useParams()
-    
+    useEffect(() => {
+        const loadOrder = async () => {
+          try {
+            const order = await startLoadingOrderByTrackingNum(orderId)
+            setOrder(order)
+          } catch (error) {
+            console.error("Error loading order", error)
+          }
+        }
+        loadOrder()
+    }, [orderId])
+    console.log(order)
   return (
     <div className="card mt-5" style={{ maxWidth: '25rem', margin: 'auto' }}>
       <div className="card-header text-center">The status for order <span className="text-info">{orderId}</span></div>
