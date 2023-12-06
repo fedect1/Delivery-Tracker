@@ -43,9 +43,6 @@ export const orderSlice = createSlice({
             state.isLoading = false;
         },
         deleteOrder: (state, { payload }) => {
-            console.log("deleteOrder")
-            console.log(payload)
-            console.log(state.listOrders)
             state.listOrders = state.listOrders.filter(order => order._id !== payload);
             state.isActiveOrder = null;
         },

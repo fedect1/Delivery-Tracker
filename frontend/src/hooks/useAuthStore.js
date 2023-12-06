@@ -50,8 +50,6 @@ export const useAuthStore = () => {
         const now = new Date().getTime();
         if ( now - tokenInitDate > 60 * 60 * 24 * 1000) {
             dispatch( onLogout( 'Token expired' ) );
-            console.log(now - tokenInitDate)
-            console.log( 'Token expired')
             return false;
         }
         try {
