@@ -13,8 +13,19 @@ export const TrackingStatus = () => {
     navigate(`/track-order/${trackingNumber}`)
   };
 
+  const goBack = () => {
+    navigate(`/`)
+  }
+
   return (
     <div className="container">
+        <div className="text-end mt-3">
+          <button className="btn btn-outline-primary" onClick={goBack}>
+            <i className="fas fa-arrow-left"></i>
+            &nbsp;
+            Back  
+          </button>
+        </div>
         <div className="card mt-5 text-center" style={{ maxWidth: '20rem', margin: 'auto' }}>
             <h5 className="card-header">Tracking Status</h5>
             <form className="form-inline container mt-2" onSubmit={handleSubmit}>
