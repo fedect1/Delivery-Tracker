@@ -139,6 +139,7 @@ describe("when the orders are posted", () => {
     })
 })
 describe("checking Zod validation", () => {
+    // missing required property
     test("order with missing required property name can not be added", async () => {
         const newOrder = {
             "costumerInfo": {
@@ -211,6 +212,100 @@ describe("checking Zod validation", () => {
                 expect(response.body.message).toContain("Validation failed: Email is required");
             })
     })
+
+    // invalid property value
+    test("order with invalid property type name can not be added", async () => {
+        const newOrder = {
+            "costumerInfo": {
+                "name": 123,
+                "phone": "982-653-4750",
+                "address": "1563 Kreuz, Berlin, Germany",
+                "email": "jor@gmail.com",
+            },
+        }
+        await api
+            .post("/orders")
+            .set('Authorization', `Bearer ${tokenTestUser}`)
+            .send(newOrder)
+            .expect(400)
+            .expect("Content-Type", /application\/json/)
+            .expect(response => {
+                expect(response.body.message).toContain("Validation failed: Name is expected string, received number");
+            })
+    })
+    test("order with invalid property type phone can not be added", async () => {
+        const newOrder = {
+            "costumerInfo": {
+                "name": "Jorge Luis",
+                "phone": 123,
+                "address": "1563 Kreuz, Berlin, Germany",
+                "email": "fede@gmail.com",
+            },
+        }
+        await api
+            .post("/orders")
+            .set('Authorization', `Bearer ${tokenTestUser}`)
+            .send(newOrder)
+            .expect(400)
+            .expect("Content-Type", /application\/json/)
+            .expect(response => {
+                expect(response.body.message).toContain("Validation failed: Phone is expected string, received number");
+            })
+    })
+    test("order with invalid property type address can not be added", async () => {
+        const newOrder = {
+            "costumerInfo": {
+                "name": "Jorge Luis",
+                "phone": "982-653-4750",
+                "address": 123,
+                "email": "jr@gmail.com",
+            },
+        }
+        await api
+            .post("/orders")
+            .set('Authorization', `Bearer ${tokenTestUser}`)
+            .send(newOrder)
+            .expect(400)
+            .expect("Content-Type", /application\/json/)
+            .expect(response => {
+                expect(response.body.message).toContain("Validation failed: Address is expected string, received number");
+            })
+    })
+    test("order with invalid property type email can not be added", async () => {
+        const newOrder = {
+            "costumerInfo": {
+                "name": "Jorge Luis",
+                "phone": "982-653-4750",
+                "address": "1563 Kreuz, Berlin, Germany",
+                "email": 123,
+            },
+        }
+        await api
+            .post("/orders")
+            .set('Authorization', `Bearer ${tokenTestUser}`)
+            .send(newOrder)
+            .expect(400)
+            .expect("Content-Type", /application\/json/)
+            .expect(response => {
+                expect(response.body.message).toContain("Validation failed: Email is expected string, received number");
+            })
+    })
+    test("order with invalid property type email can not be added", async () => {
+        const newOrder = {
+            "costumerInfo": {
+                "name": "Jorge Luis",
+                "phone": "982-653-4750",
+                "address": "1563 Kreuz, Berlin, Germany",
+                "email": "fedegmail.com",
+            },
+        }
+        await api
+            .post("/orders")
+            .set('Authorization', `Bearer ${tokenTestUser}`)
+            .send(newOrder)
+            .expect(400)
+    })
+
 
 })        
 
