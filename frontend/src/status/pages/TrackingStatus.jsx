@@ -1,12 +1,16 @@
-import React, { useState } from 'react';
-
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 export const TrackingStatus = () => {
+  const [trackingNumber, setTrackingNumber] = useState('');
+  const navigate = useNavigate();
 
+  const handleTrackingNumberChange = (event) => {
+    setTrackingNumber(event.target.value);
+  };
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    // Aquí puedes añadir la lógica para manejar el envío del formulario
-    console.log('Formulario enviado');
+    navigate(`/track-order/${trackingNumber}`)
   };
 
   return (
@@ -16,12 +20,12 @@ export const TrackingStatus = () => {
             <form className="form-inline container mt-2" onSubmit={handleSubmit}>
                 <div className="form-group mx-sm-3 mb-2">
                     <input 
-                    type="password" 
+                    type="text" 
                     className="form-control" 
-                    id="inputPassword2" 
+                    id="inputTrackingNumber" 
                     placeholder="Enter tracking number"
-                    //value={password}
-                    //onChange={handlePasswordChange}
+                    value={trackingNumber}
+                    onChange={handleTrackingNumberChange}
                     />
                 </div>
                 <button type="submit" className="btn btn-primary mb-2">Check status</button>
