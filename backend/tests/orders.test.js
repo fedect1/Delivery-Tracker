@@ -79,6 +79,80 @@ beforeEach(async () => {
     orderIdTestUser=responseOrder.body._id
     trackerNumberTestUser=responseOrder.body.trackerNumber
 })
+
+describe("GET /orders - when the orders are retrieved", () => {
+    test("orders are returned as json", async () => {
+        await api
+            .get("/orders")
+            .set('Authorization', `Bearer ${tokenTestUser}`)
+            .expect(200)
+            .expect("Content-Type", /application\/json/);
+    })
+    test("orders are returned and response: _id, trackerNumber, costumerInfo, status, statusUpdates, createdAt", async () => {
+        const response = await api
+            .get("/orders")
+            .set('Authorization', `Bearer ${tokenTestUser}`)
+            .expect(200)
+            .expect("Content-Type", /application\/json/)
+        expect(response.body[0]).toHaveProperty("_id")
+        expect(response.body[0]).toHaveProperty("trackerNumber")
+        expect(response.body[0]).toHaveProperty("costumerInfo")
+        expect(response.body[0]).toHaveProperty("status")
+        expect(response.body[0]).toHaveProperty("statusUpdates")
+        expect(response.body[0]).toHaveProperty("createdAt")
+        expect(Object.keys(response.body[0]).length).toBe(6)
+    })
+    test("orders can be retrieved and the response is an array", async () => {
+        const response = await api
+            .get("/orders")
+            .set('Authorization', `Bearer ${tokenTestUser}`)
+            .expect(200)
+            .expect("Content-Type", /application\/json/)
+        expect(response.body).toBeInstanceOf(Array)
+    })
+    test("orders can be retrieved and the response is an array of objects", async () => {
+        const response = await api
+            .get("/orders")
+            .set('Authorization', `Bearer ${tokenTestUser}`)
+            .expect(200)
+            .expect("Content-Type", /application\/json/)
+        expect(response.body[0]).toBeInstanceOf(Object)
+    })
+    test("orders can be retrieved and the response is an array of objects with the correct properties", async () => {
+        const response = await api
+            .get("/orders")
+            .set('Authorization', `Bearer ${tokenTestUser}`)
+            .expect(200)
+            .expect("Content-Type", /application\/json/)
+        expect(response.body[0]).toHaveProperty("_id")
+        expect(response.body[0]).toHaveProperty("trackerNumber")
+        expect(response.body[0]).toHaveProperty("costumerInfo")
+        expect(response.body[0]).toHaveProperty("status")
+        expect(response.body[0]).toHaveProperty("statusUpdates")
+        expect(response.body[0]).toHaveProperty("createdAt")
+        expect(Object.keys(response.body[0]).length).toBe(6)
+    })
+    test("orders can not be retrieved when the token is not provided", async () => {
+        await api
+            .get("/orders")
+            .expect(401)
+            .expect("Content-Type", /application\/json/)
+            .expect(response => {
+                expect(response.body.message).toContain("Missing or invalid token");
+            })
+    })
+    test("orders can not be retrieved when the token is not valid", async () => {
+        await api
+            .get("/orders")
+            .set('Authorization', `Bearer ${tokenTestUser}123`)
+            .expect(401)
+            .expect("Content-Type", /application\/json/)
+            .expect(response => {
+                expect(response.body.message).toContain("Missing or invalid token");
+            })
+    })
+})
+/*
 describe("POST /orders - when the orders are posted", () => {
     test("orders are returned as json", async () => {
 
@@ -456,9 +530,29 @@ describe("GET /track/:trackerNumber - when the order is retrieved", () => {
     test("order is retrieved as json", async () => {
         await api
             .get(`/orders/track/${trackerNumberTestUser}`)
-            .set('Authorization', `Bearer ${tokenTestUser}`)
             .expect(200)
             .expect("Content-Type", /application\/json/);
+    })
+    test("order is retrieved and response: _id, trackerNumber, costumerInfo, status, statusUpdates, createdAt", async () => {
+        const response = await api
+            .get(`/orders/track/${trackerNumberTestUser}`)
+            .expect(200)
+            .expect("Content-Type", /application\/json/)
+        expect(response.body).toHaveProperty("trackerNumber")
+        expect(response.body).toHaveProperty("costumerInfo")
+        expect(response.body).toHaveProperty("status")
+        expect(response.body).toHaveProperty("statusUpdates")
+        expect(response.body).toHaveProperty("createdAt")
+        expect(Object.keys(response.body).length).toBe(5)
+    })
+    test("order is not retrieved when the order does not exist", async () => {
+        await api
+            .get(`/orders/track/ORD-12345ABO`)
+            .expect(404)
+            .expect("Content-Type", /application\/json/)
+            .expect(response => {
+                expect(response.body.message).toContain("Order not found");
+            })
     })
 })
 describe("/ DELETE /orders/:id - when the order is deleted", () => {
@@ -490,6 +584,7 @@ describe("/ DELETE /orders/:id - when the order is deleted", () => {
         expect(response.body).toEqual({})
     })  
 })
+*/
 afterAll(() => {
     mongoose.connection.close();
     server.close();

@@ -1,17 +1,25 @@
 export const errorHandler = (err, req, res, next) => {
     console.error(err.stack);
-    console.error(err.type)
+    console.error(err.name)
 
     if (err.type === 'UnauthorizedUpdate') {
         return res.status(401).json({ message: err.message });
     }
-
+    
     if (err.type === 'UnauthorizedDelete') {
         return res.status(401).json({ message: err.message });
     }
-
+    
     if (err.type === 'OrderNotFound') {
         return res.status(404).json({ message: err.message });
+    }
+
+    if (err.name === 'JsonWebTokenError') {
+        return res.status(401).json({ message: 'Missing or invalid token' });
+    }
+
+    if (err.name === 'TokenExpiredError') {
+        return res.status(401).json({ message: 'Missing or invalid token' });
     }
 
     if (err.type === 'ZodError') {
@@ -36,13 +44,6 @@ export const errorHandler = (err, req, res, next) => {
         return res.status(400).json({ message: 'Mongo error', details: err.message });
     }
 
-    if (err.name === 'JsonWebTokenError') {
-        return res.status(401).json({ message: 'Invalid token' });
-    }
-
-    if (err.name === 'TokenExpiredError') {
-        return res.status(401).json({ message: 'Token expired' });
-    }
 
     if (err.statusCode === 403) {
         return res.status(403).json({ message: err.message });
