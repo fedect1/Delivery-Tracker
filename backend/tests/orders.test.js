@@ -11,6 +11,7 @@ let tokenTestUser;
 let orderIdTestUser;
 let trackerNumberTestUser;
 let nonAccreditedUserToken
+
 beforeEach(async () => {
     const userId = [];
     await UserModel.deleteMany({});
@@ -152,7 +153,6 @@ describe("GET /orders - when the orders are retrieved", () => {
             })
     })
 })
-/*
 describe("POST /orders - when the orders are posted", () => {
     test("orders are returned as json", async () => {
 
@@ -584,7 +584,8 @@ describe("/ DELETE /orders/:id - when the order is deleted", () => {
         expect(response.body).toEqual({})
     })  
 })
-*/
+
+
 afterAll(() => {
     mongoose.connection.close();
     server.close();
