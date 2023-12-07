@@ -130,13 +130,15 @@ class Order {
     static async deleteOrder({id, userId}) {
         try {
             const order = await this.findById(id);
+            if (!order) {
+                const error = new Error("Order not found");
+                error.type = "OrderNotFound";
+                throw error;
+            }
             if (order.user.toString() !== userId) {
                 const error = new Error("You are not authorized to delete this order");
                 error.type = "UnauthorizedDelete";
                 throw error;
-            }
-            if (!order) {
-                throw new Error("Order not found");
             }
             await this.findByIdAndDelete(id);
             return { message: "Order successfully deleted" }

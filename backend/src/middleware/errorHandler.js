@@ -10,6 +10,10 @@ export const errorHandler = (err, req, res, next) => {
         return res.status(401).json({ message: err.message });
     }
 
+    if (err.type === 'OrderNotFound') {
+        return res.status(404).json({ message: err.message });
+    }
+
     if (err.type === 'ZodError') {
         return res.status(400).json({ message: err.message, errors: err.errors });
     }

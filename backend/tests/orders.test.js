@@ -449,9 +449,37 @@ describe("PATCH /orders/:trackerNumber/status - when the status is updated", () 
             .expect(response => {
                 expect(response.body.message).toContain("You are not authorized to update this order");
             })
-    })
+        })
 })
-
+describe("/ DELETE /orders/:id - when the order is deleted", () => {
+    test("order is not deleted when the order is not yours", async () => {
+        await api
+            .delete(`/orders/${orderIdTestUser}`)
+            .set('Authorization', `Bearer ${nonAccreditedUserToken}`)
+            .expect(401)
+            .expect("Content-Type", /application\/json/)
+            .expect(response => {
+                expect(response.body.message).toContain("You are not authorized to delete this order");
+            })
+    })
+    test("order is not deleted when the order does not exist", async () => {
+        await api
+            .delete(`/orders/60a6b4b9d6b9b21e7c9c2a2f`)
+            .set('Authorization', `Bearer ${tokenTestUser}`)
+            .expect(404)
+            .expect("Content-Type", /application\/json/)
+            .expect(response => {
+                expect(response.body.message).toContain("Order not found");
+            })
+    })
+    test("order is deleted and no content in the response", async () => {
+        const response = await api
+            .delete(`/orders/${orderIdTestUser}`)
+            .set('Authorization', `Bearer ${tokenTestUser}`)
+            .expect(204)
+        expect(response.body).toEqual({})
+    })  
+})
 afterAll(() => {
     mongoose.connection.close();
     server.close();

@@ -104,6 +104,7 @@ export class orderController{
             const { id } = req.params;
             const userId = req.userId;
             const order = await OrderModel.deleteOrder({id, userId});
+            
             if (!order) {
                 return res.status(404).json({ message: "Order not found" });
             }
