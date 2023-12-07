@@ -3,7 +3,6 @@ import UserModel from './User.js';
 import { v4 as uuidv4 } from 'uuid';
 
 
-
 const statusUpdateSchema = new mongoose.Schema({
     timestamp: {
         type: Date,
@@ -113,7 +112,9 @@ class Order {
                 throw new Error("Order not found");
             }
             if (order.user.toString() !== userId) {
-                throw new Error("You are not authorized to update this order");
+                const error = new Error("You are not authorized to update this order");
+                error.type = "UnauthorizedUpdate";
+                throw error;
             }
             order.status = input.status;
             order.statusUpdates.push({
@@ -129,11 +130,15 @@ class Order {
     static async deleteOrder({id, userId}) {
         try {
             const order = await this.findById(id);
-            if (order.user.toString() !== userId) {
-                throw new Error("You are not authorized to delete this order");
-            }
             if (!order) {
-                throw new Error("Order not found");
+                const error = new Error("Order not found");
+                error.type = "OrderNotFound";
+                throw error;
+            }
+            if (order.user.toString() !== userId) {
+                const error = new Error("You are not authorized to delete this order");
+                error.type = "UnauthorizedDelete";
+                throw error;
             }
             await this.findByIdAndDelete(id);
             return { message: "Order successfully deleted" }
