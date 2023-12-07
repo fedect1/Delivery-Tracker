@@ -9,6 +9,7 @@ import { response } from 'express';
 const api = supertest(app);
 let tokenTestUser;
 let orderIdTestUser;
+let trackerNumberTestUser;
 let nonAccreditedUserToken
 beforeEach(async () => {
     const userId = [];
@@ -43,7 +44,6 @@ beforeEach(async () => {
         })
         .expect(200)
     nonAccreditedUserToken = responseNonAccreditedUser.body.token
-
     await api
         .post("/users")
         .send({
@@ -77,6 +77,7 @@ beforeEach(async () => {
         .expect(201)
         .expect("Content-Type", /application\/json/)
     orderIdTestUser=responseOrder.body._id
+    trackerNumberTestUser=responseOrder.body.trackerNumber
 })
 describe("POST /orders - when the orders are posted", () => {
     test("orders are returned as json", async () => {
@@ -450,6 +451,15 @@ describe("PATCH /orders/:trackerNumber/status - when the status is updated", () 
                 expect(response.body.message).toContain("You are not authorized to update this order");
             })
         })
+})
+describe("GET /track/:trackerNumber - when the order is retrieved", () => {
+    test("order is retrieved as json", async () => {
+        await api
+            .get(`/orders/track/${trackerNumberTestUser}`)
+            .set('Authorization', `Bearer ${tokenTestUser}`)
+            .expect(200)
+            .expect("Content-Type", /application\/json/);
+    })
 })
 describe("/ DELETE /orders/:id - when the order is deleted", () => {
     test("order is not deleted when the order is not yours", async () => {

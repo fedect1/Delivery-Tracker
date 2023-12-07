@@ -93,7 +93,7 @@ export class orderController{
                 statusUpdates: order.statusUpdates,
                 createdAt: order.statusUpdates[0]?.timestamp,
             }
-            res.status(201).json(response);
+            res.status(200).json(response);
         } catch (err) {
             next(err)
         }
