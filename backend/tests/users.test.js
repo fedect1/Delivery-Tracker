@@ -8,17 +8,18 @@ import { app, server } from '../src/app.js';
 import bcrypt from 'bcrypt';
 
 const api = supertest(app);
+beforeEach(async () => {
+    await UserModel.deleteMany({});
+    await OrderModel.deleteMany({});
+
+    const passwordHash = await bcrypt.hash('123456#Ab', 10);
+    const user = new UserModel({ username: 'usuario3', email:'user3@gmail.com', password: passwordHash });
+    
+    await user.save();
+})
+ 
+
 describe('User tests', () => {
-
-    beforeEach(async () => {
-        await UserModel.deleteMany({});
-        await OrderModel.deleteMany({});
-
-        const passwordHash = await bcrypt.hash('123456#Ab', 10);
-        const user = new UserModel({ username: 'usuario3', email:'user3@gmail.com', password: passwordHash });
-        
-        await user.save();
-    })
 
     test('There is one user', async () => {
         const users = await UserModel.find({});
@@ -38,7 +39,6 @@ describe('User tests', () => {
             .expect(201)
             .expect('Content-Type', /application\/json/);
     })
-
 
     test('Create a new user with an existing username', async () => {
         await api
@@ -146,12 +146,10 @@ describe('User tests', () => {
         const updatedUser = await UserModel.findOne({username: 'usuario6'});
         expect(updatedUser.orders).toHaveLength(1);
 
-    })
-
-
-    afterAll(() => {
-        mongoose.connection.close();
-        server.close();
-    })
-
+    })  
 });
+
+afterAll(() => {
+    mongoose.connection.close();
+    server.close();
+})
