@@ -3,7 +3,6 @@ import UserModel from './User.js';
 import { v4 as uuidv4 } from 'uuid';
 
 
-
 const statusUpdateSchema = new mongoose.Schema({
     timestamp: {
         type: Date,
@@ -113,7 +112,9 @@ class Order {
                 throw new Error("Order not found");
             }
             if (order.user.toString() !== userId) {
-                throw new Error("You are not authorized to update this order");
+                const error = new Error("You are not authorized to update this order");
+                error.type = "UnauthorizedUpdate";
+                throw error;
             }
             order.status = input.status;
             order.statusUpdates.push({

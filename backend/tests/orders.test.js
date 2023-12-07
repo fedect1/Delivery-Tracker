@@ -9,6 +9,7 @@ import { response } from 'express';
 const api = supertest(app);
 let tokenTestUser;
 let orderIdTestUser;
+let nonAccreditedUserToken
 beforeEach(async () => {
     const userId = [];
     await UserModel.deleteMany({});
@@ -25,6 +26,24 @@ beforeEach(async () => {
         const orderObject = new OrderModel(order);
         await orderObject.save();
     }
+
+    await api
+        .post("/users")
+        .send({
+            "username": "nonAccreditedUser",
+            "email": "nonacredite@gmail.com",
+            "password": "123456#Ab"
+        })
+        .expect(201)
+    const responseNonAccreditedUser = await api
+        .post("/login")
+        .send({
+            "email": "nonacredite@gmail.com",
+            "password": "123456#Ab"
+        })
+        .expect(200)
+    nonAccreditedUserToken = responseNonAccreditedUser.body.token
+
     await api
         .post("/users")
         .send({
@@ -389,6 +408,47 @@ describe("PATCH /orders/:trackerNumber/status - when the status is updated", () 
         expect(response.body).toHaveProperty("status")
         expect(response.body).toHaveProperty("statusUpdates")
         expect(Object.keys(response.body).length).toBe(3)
+    })
+    // invalid status
+    test("status is not updated when invalid status is provided", async () => {
+        await api
+            .patch(`/orders/${orderIdTestUser}/status`)
+            .set('Authorization', `Bearer ${tokenTestUser}`)
+            .send({
+                "status": "delayed"
+            })
+            .expect(400)
+            .expect("Content-Type", /application\/json/)
+            .expect(response => {
+                expect(response.body.message).toContain("Validation failed: Status is invalid enum value. expected 'received' | 'preparing' | 'out for delivery' | 'delivered', received 'delayed'");
+            })
+    })
+    // missing status
+    test("status is not updated when status is missing", async () => {
+        await api
+            .patch(`/orders/${orderIdTestUser}/status`)
+            .set('Authorization', `Bearer ${tokenTestUser}`)
+            .send({
+            })
+            .expect(400)
+            .expect("Content-Type", /application\/json/)
+            .expect(response => {
+                expect(response.body.message).toContain("Validation failed: Status is required");
+            })
+    })
+    // change status from an order that is not yours
+    test("status is not updated when the order is not yours", async () => {
+        await api
+            .patch(`/orders/${orderIdTestUser}/status`)
+            .set('Authorization', `Bearer ${nonAccreditedUserToken}`)
+            .send({
+                "status": "preparing"
+            })
+            .expect(401)
+            .expect("Content-Type", /application\/json/)
+            .expect(response => {
+                expect(response.body.message).toContain("You are not authorized to update this order");
+            })
     })
 })
 
