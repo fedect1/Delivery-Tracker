@@ -131,7 +131,9 @@ class Order {
         try {
             const order = await this.findById(id);
             if (order.user.toString() !== userId) {
-                throw new Error("You are not authorized to delete this order");
+                const error = new Error("You are not authorized to delete this order");
+                error.type = "UnauthorizedDelete";
+                throw error;
             }
             if (!order) {
                 throw new Error("Order not found");
