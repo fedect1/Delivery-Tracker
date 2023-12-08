@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const { MONGODB_URI_DEV, MONGODB_URI_TEST, MONGODB_URI_PROD, NODE_ENV } = process.env;
+const { MONGODB_URI_DEV, MONGODB_URI_TEST, MONGODB_URI_TEST_FRONTEND, MONGODB_URI_PROD, NODE_ENV } = process.env;
 //const connectString = NODE_ENV === "test" ? MONGODB_URI_TEST : MONGODB_URI_DEV;
 
 const connectString = () => {
@@ -11,6 +11,8 @@ const connectString = () => {
         return MONGODB_URI_TEST;
     } else if (NODE_ENV === "production") {
         return MONGODB_URI_PROD;
+    } else if (NODE_ENV === "testFrontend") {
+        return MONGODB_URI_TEST_FRONTEND;
     } else {
         return MONGODB_URI_DEV;
     }

@@ -1,0 +1,14 @@
+services:
+  frontend-test:
+    image: delivery-tracker-api-test-frontend
+    build:
+      context: backend
+      dockerfile: Dockerfile.frontend-test
+    ports:
+      - '3005:3005'
+    env_file:
+      - ./backend/.env
+    environment:
+      - NODE_ENV=test:frontend
+    volumes:
+      - ./backend/src:/app/src
